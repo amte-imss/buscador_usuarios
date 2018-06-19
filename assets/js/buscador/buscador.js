@@ -45,29 +45,34 @@ $(function () {
 
   $(document).on("click", ".paginacionGeneral a", function(event){
       event.preventDefault();
-      $( this ).addClass( 'active' );
-      $('.paginacionGeneral')[0].firstElementChild.remove();
-      $( ".paginacionGeneral" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0" data-ci-pagination-page="1">1</a>');
-      var page = $(this).attr('href').split('/')[7];
-      var datos = obtener_datos_formulario('form_buscador_general');
-      datos.pagina = page;
-      datos.limite = 1500;
-      //console.log(datos);
-      busqueda(datos,"#secRespuestaBusqueda",'general', this);
+      if($("#selectTotalRows")[0].value != "" && $("#selectTotalRows")[0].value == undefined){
+        $( this ).addClass( 'active' );
+        $('.paginacionGeneral')[0].firstElementChild.remove();
+        $( ".paginacionGeneral" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0" data-ci-pagination-page="1">1</a>');
+        var page = $(this).attr('href').split('/')[7];
+        var datos = obtener_datos_formulario('form_buscador_general');
+        datos.pagina = page;
+        datos.limite = $("#selectTotalRows")[0].value;
+        //console.log(datos);
+        busqueda(datos,"#secRespuestaBusqueda",'general', this);
+      }
+
   });
 
   $(document).on("click", ".paginacionAvanzada a", function(event){
       event.preventDefault();
-      $( this ).addClass('active');
-      $('.paginacionAvanzada')[0].firstElementChild.remove();
-      $( ".paginacionAvanzada" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0" data-ci-pagination-page="1">1</a>');
-      var page = $(this).attr('href').split('/')[7];
-      var datos = obtener_datos_formulario('form_buscador_avanzado');
-      var sanitizarDatos = verificarDatosAvanzado(datos);
-      sanitizarDatos.offset = page;
-      sanitizarDatos.limit = 1500;
-      //console.log(sanitizarDatos);
-      busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada', this);
+      if($("#selectTotalRows")[0].value != "" && $("#selectTotalRows")[0].value == undefined){
+        $( this ).addClass('active');
+        $('.paginacionAvanzada')[0].firstElementChild.remove();
+        $( ".paginacionAvanzada" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0" data-ci-pagination-page="1">1</a>');
+        var page = $(this).attr('href').split('/')[7];
+        var datos = obtener_datos_formulario('form_buscador_avanzado');
+        var sanitizarDatos = verificarDatosAvanzado(datos);
+        sanitizarDatos.offset = page;
+        sanitizarDatos.limit = 1500;
+        //console.log(sanitizarDatos);
+        busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada', this);
+      }
   });
 })
 
@@ -202,6 +207,42 @@ function busqueda(datos,elemento_resultado,tipo_busqueda, elementoPaginador){
   		$(elemento_resultado).html("Ocurrió un error durante la búsqueda, inténtelo más tarde.");
   	})
   }
+}
+
+function cambiarRenglones(obj, buscador){
+  var num_renglones = obj.value;
+  if(buscador == 'general'){
+    if(num_renglones != "" && num_renglones != undefined){
+      var datos = obtener_datos_formulario('form_buscador_general');
+      datos.pagina = 0;
+      datos.limite = num_renglones;
+      if(datos.tipo == 'delegacion'){
+          datos.busqueda = remove_acentos(datos.busqueda);
+      }
+      if(datos.tipo == 'nombre'){
+          datos.busqueda = remove_acentos(datos.busqueda);
+      }
+      //console.log(datos);
+      busqueda(datos,"#secRespuestaBusqueda",'general', undefined);
+      console.log($("#selectTotalRows option:eq("+num_renglones+")"));
+      //$("#selectTotalRows option:eq("+num_renglones+")").prop('selected', true)
+    }
+  }
+  if(buscador == 'avanzado'){
+    if(num_renglones != "" && num_renglones != undefined){
+      var datos = obtener_datos_formulario('form_buscador_avanzado');
+      var sanitizarDatos = verificarDatosAvanzado(datos);
+      if(Object.keys(sanitizarDatos).length > 0){
+        sanitizarDatos.offset = 0;
+        sanitizarDatos.limit = num_renglones;
+        //console.log(sanitizarDatos);
+        busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada',undefined);
+        console.log($("#selectTotalRows option:eq("+num_renglones+")"));
+        //$("#selectTotalRows option:eq("+num_renglones+")").prop('selected', true)
+      }
+    }
+  }
+
 }
 
 function mostrarUnidades(obj){

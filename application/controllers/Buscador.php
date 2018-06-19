@@ -108,13 +108,14 @@ class Buscador extends MY_Controller {
           $this->load->library('pagination');
           $config['base_url'] = site_url('buscador/obtener_busqueda_general');
           $config['total_rows'] = $total;
-          $config['per_page'] = 1500;
-          $config['num_links'] = round($total/1500);
+          $config['per_page'] = $limit;
+          $config['num_links'] = round($total/$limit);
           $this->pagination->initialize($config);
           $output['paginacion'] = $this->pagination->create_links();
           $output['resultado'] = $this->buscador->obtener_busqueda($tipo,$busqueda,array('limit'=>$limit, 'offset'=>$offset));
           $output['general'] = true;
           $output['total'] = $total;
+          $output['num_renglones'] = $limit = $this->input->post('limite',TRUE);
           $resultado['data'] = $this->load->view('buscador/tabla.tpl.php', $output, true);
           $resultado['resultado'] = true;
           echo json_encode($resultado);
@@ -155,12 +156,13 @@ class Buscador extends MY_Controller {
           }
           $output['total'] = $total;
           $config['total_rows'] = $total;
-          $config['per_page'] = 1500;
-          $config['num_links'] = round($total/1500);
+          $config['per_page'] = $output['datos_busqueda']['limit'];
+          $config['num_links'] = round($total/$output['datos_busqueda']['limit']);
           $this->pagination->initialize($config);
           $output['paginacion'] = $this->pagination->create_links();
           $output['resultado'] = $this->buscador->obtener_busqueda($tipo,$busqueda,$output['datos_busqueda']);
           $output['avanzado'] = true;
+          $output['num_renglones'] = $limit = $this->input->post('limite',TRUE);
           $resultado['data'] = $this->load->view('buscador/tabla.tpl.php', $output, true);
           $resultado['resultado'] = true;
           echo json_encode($resultado);
