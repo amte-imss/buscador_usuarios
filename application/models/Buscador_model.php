@@ -94,7 +94,6 @@ class Buscador_model extends MY_Model {
       *
       */
      private function obtener_usuarios($filtros = [], $tipo_buscador=""){
-         $this->db->flush_cache();
          $this->db->reset_query();
          $select = array('P.matricula','P.nombre','P.apellido_paterno','P.apellido_materno','P.dat_valpar correo','U.nombre unidad'
          ,'D.nombre_grupo_delegacion delegacion','C.nombre categoria','DP.nombre departamento');
@@ -103,9 +102,6 @@ class Buscador_model extends MY_Model {
          $this->db->join('catalogo.delegaciones D', 'D.id_delegacion = U.id_delegacion', 'left');
          $this->db->join('catalogo.categorias C', 'C.clave_categoria = P.clave_puesto', 'left');
          $this->db->join('catalogo.departamento DP', 'DP.clave_departamental = P.clave_depto', 'left');
-         if(isset($filtros['limit']) && isset($filtros['offset'])){
-           $this->db->limit($filtros['limit'], $filtros['offset']);
-         }
          if($tipo_buscador == "general"){
            if (!is_null($filtros) && !empty($filtros)) {
                foreach ($filtros as $key => $value) {
@@ -124,9 +120,14 @@ class Buscador_model extends MY_Model {
                }
            }
          }
-
-         $resultado = $this->db->get('nomina.concentrado_nomina P');
+         $this->db->order_by("P.matricula", "desc");
+         if(isset($filtros['limit']) && isset($filtros['offset'])){
+           $resultado = $query = $this->db->get_where('nomina.concentrado_nomina P',[],$filtros['limit'],$filtros['offset']);
+         }else{
+           $resultado = $this->db->get('nomina.concentrado_nomina P');
+         }
          //pr($this->db->last_query());
+         $this->db->reset_query();
          return $resultado->result_array();
      }
 
@@ -141,7 +142,6 @@ class Buscador_model extends MY_Model {
       *
       */
      public function obtener_info_usuario($filtros=NULL){
-       $this->db->flush_cache();
        $this->db->reset_query();
        $select = array('P.matricula','P.nombre','P.apellido_paterno','P.apellido_materno','P.dat_valpar correo','P.curp','P.rfc','U.nombre unidad'
        ,'D.nombre_grupo_delegacion delegacion','C.nombre categoria','DP.nombre departamento', 'P.mes', 'P.anio');
@@ -161,6 +161,7 @@ class Buscador_model extends MY_Model {
        $this->db->order_by("P.mes", "desc");
 
        $resultado = $this->db->get('nomina.concentrado_nomina P');
+       $this->db->reset_query();
        return $resultado->result_array();
      }
 }

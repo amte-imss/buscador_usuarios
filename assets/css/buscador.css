@@ -103,3 +103,16 @@
 label{
   font-weight: normal;
 }
+
+.paginacionAvanzada a{
+  margin-right: 10px;
+}
+
+.paginacionGeneral a{
+  margin-right: 10px;
+}
+
+.active{
+  color:red;
+  text-decoration: underline;
+}

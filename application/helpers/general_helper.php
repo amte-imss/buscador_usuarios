@@ -700,4 +700,5 @@ if(!function_exists('obtener_mes')){
      }
 }
 
+
 /* End of file general_helper.php */

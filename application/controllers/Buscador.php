@@ -103,18 +103,18 @@ class Buscador extends MY_Controller {
           $busqueda = $this->input->post('busqueda',TRUE);
           $offset = $this->input->post('pagina',TRUE);
           $limit = $this->input->post('limite',TRUE);
-          $this->load->library('pagination');
+          $total = count($this->buscador->obtener_busqueda($tipo,$busqueda,[]));
           $output['datos_busqueda'] = $this->input->post(NULL, TRUE);
-          $config['base_url'] = site_url('buscador/obtener_busqueda_general?'.$tipo.'='.$busqueda.'&tipo='.$tipo);
-          $config['num_links'] = 2;
-          $config['use_page_numbers'] = TRUE;
-          $config['total_rows'] = count($this->buscador->obtener_busqueda($tipo,$busqueda,[]));
-          $output['resultado'] = $this->buscador->obtener_busqueda($tipo,$busqueda,array('limit'=>$limit, 'offset'=>$offset));
-          $config['per_page'] = 10;
-          $config['first_link'] = 'Inicio';
-          $config['last_link'] = 'Ultimo';
+          $this->load->library('pagination');
+          $config['base_url'] = site_url('buscador/obtener_busqueda_general');
+          $config['total_rows'] = $total;
+          $config['per_page'] = 1500;
+          $config['num_links'] = round($total/1500);
           $this->pagination->initialize($config);
           $output['paginacion'] = $this->pagination->create_links();
+          $output['resultado'] = $this->buscador->obtener_busqueda($tipo,$busqueda,array('limit'=>$limit, 'offset'=>$offset));
+          $output['general'] = true;
+          $output['total'] = $total;
           $resultado['data'] = $this->load->view('buscador/tabla.tpl.php', $output, true);
           $resultado['resultado'] = true;
           echo json_encode($resultado);
@@ -134,8 +134,33 @@ class Buscador extends MY_Controller {
           $tipo = "avanzada";
           $busqueda = "";
           $output['datos_busqueda'] = $this->input->post(NULL, TRUE);
-          //pr($output['datos_busqueda']);
+          $totalQuery = $output['datos_busqueda'];
+          unset($totalQuery['offset']);
+          unset($totalQuery['limit']);
+          $totalArray = $this->buscador->obtener_busqueda($tipo,$busqueda,$totalQuery);
+          $totalAnd = count($totalArray['general']);
+          $totalOr = count($totalArray['avanzada']);
+          $output['totalArray'] = $totalArray;
+          $output['totalAnd'] = $totalAnd;
+          $output['totalOr'] = $totalOr;
+          $total = 0;
+          $this->load->library('pagination');
+          $config['base_url'] = site_url('buscador/obtener_busqueda_avanzada');
+          if($totalAnd > 0){
+            $total = $totalAnd;
+          }else{
+            if($totalOr > 0){
+              $total = $totalOr;
+            }
+          }
+          $output['total'] = $total;
+          $config['total_rows'] = $total;
+          $config['per_page'] = 1500;
+          $config['num_links'] = round($total/1500);
+          $this->pagination->initialize($config);
+          $output['paginacion'] = $this->pagination->create_links();
           $output['resultado'] = $this->buscador->obtener_busqueda($tipo,$busqueda,$output['datos_busqueda']);
+          $output['avanzado'] = true;
           $resultado['data'] = $this->load->view('buscador/tabla.tpl.php', $output, true);
           $resultado['resultado'] = true;
           echo json_encode($resultado);

@@ -12,8 +12,13 @@ $(function () {
   $("#form_buscador_general" ).submit(function( event ) {
     var datos = obtener_datos_formulario('form_buscador_general');
     datos.pagina = 0;
-    datos.limite = 20;
-    busqueda(datos,"#secRespuestaBusqueda",'general');
+    datos.limite = 1500;
+    //console.log(datos);
+    if(datos.tipo == 'delegacion'){
+        console.log(remove_acentos(datos.busqueda));
+    }
+
+    busqueda(datos,"#secRespuestaBusqueda",'general', undefined);
     event.preventDefault();
   });
 
@@ -22,7 +27,10 @@ $(function () {
     var datos = obtener_datos_formulario('form_buscador_avanzado');
     var sanitizarDatos = verificarDatosAvanzado(datos);
     if(Object.keys(sanitizarDatos).length > 0){
-      busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada');
+      sanitizarDatos.offset = 0;
+      sanitizarDatos.limit = 1500;
+      //console.log(sanitizarDatos);
+      busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada',undefined);
     }else{
       $('#error').show();
     }
@@ -33,14 +41,31 @@ $(function () {
   $('#secSelectDepartamento').hide();
   $('#error').hide();
 
-
-  $(document).on("click", ".pagination a", function(event){
+  $(document).on("click", ".paginacionGeneral a", function(event){
       event.preventDefault();
-      var page = $(this).data("ci-pagination-page");
+      $( this ).addClass( 'active' );
+      $('.paginacionGeneral')[0].firstElementChild.remove();
+      $( ".paginacionGeneral" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0" data-ci-pagination-page="1">1</a>');
+      var page = $(this).attr('href').split('/')[7];
       var datos = obtener_datos_formulario('form_buscador_general');
       datos.pagina = page;
-      datos.limite = 20;
-      busqueda(datos,"#secRespuestaBusqueda",'general');
+      datos.limite = 1500;
+      //console.log(datos);
+      busqueda(datos,"#secRespuestaBusqueda",'general', this);
+  });
+
+  $(document).on("click", ".paginacionAvanzada a", function(event){
+      event.preventDefault();
+      $( this ).addClass('active');
+      $('.paginacionAvanzada')[0].firstElementChild.remove();
+      $( ".paginacionAvanzada" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0" data-ci-pagination-page="1">1</a>');
+      var page = $(this).attr('href').split('/')[7];
+      var datos = obtener_datos_formulario('form_buscador_avanzado');
+      var sanitizarDatos = verificarDatosAvanzado(datos);
+      sanitizarDatos.offset = page;
+      sanitizarDatos.limit = 1500;
+      //console.log(sanitizarDatos);
+      busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada', this);
   });
 })
 
@@ -59,7 +84,7 @@ function verificarDatosAvanzado(datos){
       delete todos.nombre;
   }
   if(todos.matricula == "Escribe matrícula ..." || todos.matricula == undefined || todos.matricula == '' || todos.matricula == null){
-      console.log("DELETE MATRICULA");
+      //console.log("DELETE MATRICULA");
      delete todos.matricula;
   }
   if(todos.apellido_paterno == "Escribe apellido paterno ..." || todos.apellido_paterno == undefined || todos.apellido_paterno == '' || todos.apellido_paterno == null){
@@ -106,7 +131,7 @@ function cambiarPlaceholder(obj){
   }
 }
 
-function busqueda(datos,elemento_resultado,tipo_busqueda){
+function busqueda(datos,elemento_resultado,tipo_busqueda, elementoPaginador){
   $(elemento_resultado).empty();
   if(tipo_busqueda == "general"){
     $.ajax({
@@ -122,6 +147,17 @@ function busqueda(datos,elemento_resultado,tipo_busqueda){
       remove_loader();
   		if(response.resultado==true){
   			$(elemento_resultado).html(response.data);
+        if(elementoPaginador != undefined){
+          $(".paginacionGeneral").children().each(function(index) {
+              if($(this)[0].attributes[1] != undefined){
+                  if($(this)[0].attributes[1].value == elementoPaginador.attributes[1].value){
+                    $( this ).addClass( "active" );
+                  }
+              }
+          });
+        }
+        //$('.paginacion').children().first().remove();
+        //$( ".paginacion" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/1" data-ci-pagination-page="1">1</a>');
   		} else {
   			$(elemento_resultado).html(html_message(response.error, 'danger'));
   		}
@@ -144,7 +180,19 @@ function busqueda(datos,elemento_resultado,tipo_busqueda){
       remove_loader();
   		if(response.resultado==true){
   			$(elemento_resultado).html(response.data);
+        if(elementoPaginador != undefined){
+          $(".paginacionAvanzada").children().each(function(index) {
+              if($(this)[0].attributes[1] != undefined){
+                  if($(this)[0].attributes[1].value == elementoPaginador.attributes[1].value){
+                    $( this ).addClass( "active" );
+                  }
+              }
+          });
+        }
+        //$('.paginacionAvanzada').children().first().remove();
+        //$( ".paginacionAvanzada" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/1" data-ci-pagination-page="1">1</a>');
   		} else {
+        //console.log(response);
   			$(elemento_resultado).html(html_message(response.error, 'danger'));
   		}
   	})
@@ -252,4 +300,23 @@ function create_loader(){
 */
 function remove_loader(){
 	$("#cargador").hide();
+}
+
+/**
+ * fUNCIÓN QUE ELIMINA ACENTOS
+ *
+ */
+function remove_acentos(cadena){
+  cadena=cadena.replace('Á','A');
+  cadena=cadena.replace('É','E');
+  cadena=cadena.replace('Í','I');
+  cadena=cadena.replace('Ó','O');
+  cadena=cadena.replace('Ú','U');
+  cadena=cadena.replace('Ñ','N');
+  cadena=cadena.replace('Ä','A');
+  cadena=cadena.replace('Ë','E');
+  cadena=cadena.replace('Ï','I');
+  cadena=cadena.replace('Ö','O');
+  cadena=cadena.replace('Ü','U');
+  return cadena;
 }
