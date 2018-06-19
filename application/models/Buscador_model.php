@@ -105,8 +105,14 @@ class Buscador_model extends MY_Model {
          if($tipo_buscador == "general"){
            if (!is_null($filtros) && !empty($filtros)) {
                foreach ($filtros as $key => $value) {
-                    if($key != 'limit' && $key != 'offset'){
-                        $this->db->where($key, $value);
+                    if($key == 'P.nombre' || $key == 'P.apellido_paterno' || $key == 'P.apellido_materno' ||
+                      $key == 'D.nombre' || $key == 'D.nombre_grupo_delegacion' || $key == 'U.nombre' || $key == 'DP.nombre' ||
+                      $key == 'C.nombre'){
+                      $this->db->or_like($key,$value);
+                    }else{
+                      if($key != 'limit' && $key != 'offset'){
+                          $this->db->where($key, $value);
+                      }
                     }
                }
            }
@@ -115,7 +121,11 @@ class Buscador_model extends MY_Model {
            if (!is_null($filtros) && !empty($filtros)) {
                foreach ($filtros as $key => $value) {
                    if($key != 'limit' && $key != 'offset'){
-                      $this->db->or_where($key, $value);
+                     if($key == 'P.nombre' || $key == 'P.apellido_paterno' || $key == 'P.apellido_materno'){
+                       $this->db->or_like($key,$value);
+                     }else{
+                       $this->db->or_where($key, $value);
+                     }
                    }
                }
            }

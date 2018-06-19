@@ -13,11 +13,13 @@ $(function () {
     var datos = obtener_datos_formulario('form_buscador_general');
     datos.pagina = 0;
     datos.limite = 1500;
-    //console.log(datos);
     if(datos.tipo == 'delegacion'){
-        console.log(remove_acentos(datos.busqueda));
+        datos.busqueda = remove_acentos(datos.busqueda);
     }
-
+    if(datos.tipo == 'nombre'){
+        datos.busqueda = remove_acentos(datos.busqueda);
+    }
+    console.log(datos);
     busqueda(datos,"#secRespuestaBusqueda",'general', undefined);
     event.preventDefault();
   });
