@@ -45,23 +45,21 @@ $(function () {
 
   $(document).on("click", ".paginacionGeneral a", function(event){
       event.preventDefault();
-      if($("#selectTotalRows")[0].value != "" && $("#selectTotalRows")[0].value == undefined){
-        $( this ).addClass( 'active' );
-        $('.paginacionGeneral')[0].firstElementChild.remove();
-        $( ".paginacionGeneral" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0" data-ci-pagination-page="1">1</a>');
-        var page = $(this).attr('href').split('/')[7];
-        var datos = obtener_datos_formulario('form_buscador_general');
-        datos.pagina = page;
-        datos.limite = $("#selectTotalRows")[0].value;
-        //console.log(datos);
-        busqueda(datos,"#secRespuestaBusqueda",'general', this);
-      }
+      $( this ).addClass( 'active' );
+      $('.paginacionGeneral')[0].firstElementChild.remove();
+      $( ".paginacionGeneral" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0" data-ci-pagination-page="1">1</a>');
+      var page = $(this).attr('href').split('/')[7];
+      var datos = obtener_datos_formulario('form_buscador_general');
+      datos.pagina = page;
+      //datos.limite = 1500;
+      datos.limite = $("#selectTotalRows")[0].value;
+      console.log(datos);
+      busqueda(datos,"#secRespuestaBusqueda",'general', this);
 
   });
 
   $(document).on("click", ".paginacionAvanzada a", function(event){
       event.preventDefault();
-      if($("#selectTotalRows")[0].value != "" && $("#selectTotalRows")[0].value == undefined){
         $( this ).addClass('active');
         $('.paginacionAvanzada')[0].firstElementChild.remove();
         $( ".paginacionAvanzada" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0" data-ci-pagination-page="1">1</a>');
@@ -69,10 +67,10 @@ $(function () {
         var datos = obtener_datos_formulario('form_buscador_avanzado');
         var sanitizarDatos = verificarDatosAvanzado(datos);
         sanitizarDatos.offset = page;
+        datos.limite = $("#selectTotalRows")[0].value;
         sanitizarDatos.limit = 1500;
         //console.log(sanitizarDatos);
         busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada', this);
-      }
   });
 })
 

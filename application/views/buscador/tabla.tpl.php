@@ -8,9 +8,8 @@ if($num_renglones < $total){
   ?>
     <center id="centro">
       <select id="selectTotalRows" class="custom-select" onchange="cambiarRenglones(this,'avanzado')">
-          <option value="">Numero de renglones</option>
           <option value="1000">1000</option>
-          <option value="1500">1500</option>
+          <option value="1500" selected>1500</option>
           <option value="2000">2000</option>
           <option value="2500">2500</option>
           <option value="3000">3000</option>
@@ -24,9 +23,8 @@ if($num_renglones < $total){
   ?>
     <center id="centro">
       <select id="selectTotalRows" class="custom-select" onchange="cambiarRenglones(this,'general')">
-          <option value=""># de renglones</option>
           <option value="1000">1000</option>
-          <option value="1500">1500</option>
+          <option value="1500" selected>1500</option>
           <option value="2000">2000</option>
           <option value="2500">2500</option>
           <option value="3000">3000</option>
