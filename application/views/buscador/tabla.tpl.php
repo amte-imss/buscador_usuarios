@@ -2,29 +2,6 @@
   <p><strong>Resultado de la búsqueda: </strong></p>
   <p>Total de registros: <?php echo $total;?></p>
 </div>
-<?php
-if($num_renglones < $total){
-  if(isset($avanzado)){
-  ?>
-    <center id="centro">
-      <?php echo $opcionesRenglones; ?>
-      <div class="paginacionAvanzada">
-        <?php echo $paginacion; ?>
-      </div>
-    </center>
-  <?php
-  }elseif (isset($general)) {
-  ?>
-    <center id="centro">
-      <?php echo $opcionesRenglones; ?>
-      <div class="paginacionGeneral">
-        <?php echo $paginacion; ?>
-      </div>
-    </center>
-<?php
-  }
-}
-?>
 
 <?php
 if(count($resultado) > 0){
@@ -151,34 +128,32 @@ if(count($resultado) > 0){
       });
 
       //remover el primer elemento para poner otro
-      $('.paginacionGeneral').children().first().remove();
-      $( ".paginacionGeneral" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0" data-ci-pagination-page="1">1</a>');
+      $('#paginacionGeneral').children().first().remove();
+      $( "#paginacionGeneral" ).prepend('<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0" data-ci-pagination-page="1">1</a></li>');
 
       //remover el ultimo link del paginador (> no sirve)
-      $('.paginacionGeneral').children().last().remove();
+      $('#paginacionGeneral').children().last().remove();
 
       //agregar inicio del paginador
-      $( ".paginacionGeneral" ).prepend( '<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0">Inicio</a>' );
+      $( "#paginacionGeneral" ).prepend( '<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0">Inicio</a></li>' );
 
       //agregar ultimo del paginador
-      var ultimo = $('.paginacionGeneral').children().last().attr('href');
-      $( ".paginacionGeneral" ).append( '<a href="'+ultimo+'">Último</a>');
+      var ultimo = $('#paginacionGeneral').children().last().attr('href');
+      $( "#paginacionGeneral" ).append( '<li><a href="'+ultimo+'">Último</a></li>');
 
       //remover el primer elemento para poner otro
-      $('.paginacionAvanzada').children().first().remove();
-      $( ".paginacionAvanzada" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0" data-ci-pagination-page="1">1</a>');
+      $('#paginacionAvanzada').children().first().remove();
+      $( "#paginacionAvanzada" ).prepend('<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0" data-ci-pagination-page="1">1</a></li>');
 
       //remover el ultimo link del paginador (> no sirve)
-      $('.paginacionAvanzada').children().last().remove();
+      $('#paginacionAvanzada').children().last().remove();
 
       //agregar inicio del paginador
-      $( ".paginacionAvanzada" ).prepend( '<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0">Inicio</a>' );
+      $( "#paginacionAvanzada" ).prepend( '<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0">Inicio</a></li>' );
 
-      //agregar ultimo del paginador
-      var ultimo = $('.paginacionAvanzada').children().last().attr('href');
-      $( ".paginacionAvanzada" ).append( '<a href="'+ultimo+'">Último</a>');
-
-
+      // //agregar ultimo del paginador
+      var ultimo = $('#paginacionAvanzada').children().last().attr('href');
+      $( "#paginacionAvanzada" ).append( '<li><a href="'+ultimo+'">Último</a></li>');
 
   });
 </script>

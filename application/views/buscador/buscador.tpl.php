@@ -115,9 +115,17 @@
         <button class="btn btn-primary" id="btnBavanzada" type="submit">Buscar</button>
       <?php echo form_close(); ?>
     </div>
-    <div id="cargador" style="display:none;">
-      <div id="ajax_loader" align="center" style="padding-top:50px;"><img src="<?php echo base_url('assets/img/cargador.gif'); ?>" alt="Cargando..." title="Cargando..." /></div>
-    </div>
     <div id="secRespuestaBusqueda">
+      <div id="secPaginador">
+          <div id="numRows">
+          </div>
+          <div id="paginador">
+          </div>
+      </div>
+      <div id="cargador" style="display:none;">
+        <div id="ajax_loader" align="center" style="padding-top:50px;"><img src="<?php echo base_url('assets/img/cargador.gif'); ?>" alt="Cargando..." title="Cargando..." /></div>
+      </div>
+      <div id="secTabla">
+      </div>
     </div>
 </div>

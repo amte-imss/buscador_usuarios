@@ -19,7 +19,7 @@ $(function () {
     if(datos.tipo == 'nombre'){
         datos.busqueda = remove_acentos(datos.busqueda);
     }
-    busqueda(datos,"#secRespuestaBusqueda",'general', undefined);
+    busqueda(datos,"#secTabla",'general');
     event.preventDefault();
   });
 
@@ -31,7 +31,7 @@ $(function () {
       sanitizarDatos.offset = 0;
       sanitizarDatos.limit = 1500;
       //console.log(sanitizarDatos);
-      busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada',undefined);
+      busqueda(sanitizarDatos,"#secTabla",'avanzada');
     }else{
       $('#error').show();
     }
@@ -42,31 +42,25 @@ $(function () {
   $('#secSelectDepartamento').hide();
   $('#error').hide();
 
-  $(document).on("click", ".paginacionGeneral a", function(event){
+  $(document).on("click", "#paginacionGeneral a", function(event){
       event.preventDefault();
-      $( this ).addClass( 'active' );
-      $('.paginacionGeneral')[0].firstElementChild.remove();
-      $( ".paginacionGeneral" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0" data-ci-pagination-page="1">1</a>');
       var page = $(this).attr('href').split('/')[7];
       var datos = obtener_datos_formulario('form_buscador_general');
       datos.pagina = page;
       datos.limite = $("#selectTotalRows")[0].value;
       //console.log(datos);
-      busqueda(datos,"#secRespuestaBusqueda",'general', this);
+      busqueda(datos,"#secTabla",'general');
 
   });
 
-  $(document).on("click", ".paginacionAvanzada a", function(event){
-      event.preventDefault();
-        $( this ).addClass('active');
-        $('.paginacionAvanzada')[0].firstElementChild.remove();
-        $( ".paginacionAvanzada" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0" data-ci-pagination-page="1">1</a>');
+  $(document).on("click", "#paginacionAvanzada a", function(event){
+        event.preventDefault();
         var page = $(this).attr('href').split('/')[7];
         var datos = obtener_datos_formulario('form_buscador_avanzado');
         var sanitizarDatos = verificarDatosAvanzado(datos);
         sanitizarDatos.offset = page;
         sanitizarDatos.limit = $("#selectTotalRows")[0].value;
-        busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada', this);
+        busqueda(sanitizarDatos,"#secTabla",'avanzada');
   });
 })
 
@@ -134,7 +128,7 @@ function cambiarPlaceholder(obj){
   }
 }
 
-function busqueda(datos,elemento_resultado,tipo_busqueda, elementoPaginador){
+function busqueda(datos,elemento_resultado,tipo_busqueda){
   $(elemento_resultado).empty();
   if(tipo_busqueda == "general"){
     $.ajax({
@@ -150,17 +144,14 @@ function busqueda(datos,elemento_resultado,tipo_busqueda, elementoPaginador){
       remove_loader();
   		if(response.resultado==true){
   			$(elemento_resultado).html(response.data);
-        if(elementoPaginador != undefined){
-          $(".paginacionGeneral").children().each(function(index) {
-              if($(this)[0].attributes[1] != undefined){
-                  if($(this)[0].attributes[1].value == elementoPaginador.attributes[1].value){
-                    $( this ).addClass( "active" );
-                  }
-              }
-          });
+        $('#paginador').html(response.paginacion);
+        console.log(response.total,response.limite);
+        if(response.total > response.limite){
+            $('#numRows').html(response.opcionesRenglones);
+        }else{
+            $('#numRows').html("");
         }
-        //$('.paginacion').children().first().remove();
-        //$( ".paginacion" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/1" data-ci-pagination-page="1">1</a>');
+
   		} else {
         remove_loader();
   			$(elemento_resultado).html(html_message(response.error, 'danger'));
@@ -185,17 +176,13 @@ function busqueda(datos,elemento_resultado,tipo_busqueda, elementoPaginador){
       remove_loader();
   		if(response.resultado==true){
   			$(elemento_resultado).html(response.data);
-        if(elementoPaginador != undefined){
-          $(".paginacionAvanzada").children().each(function(index) {
-              if($(this)[0].attributes[1] != undefined){
-                  if($(this)[0].attributes[1].value == elementoPaginador.attributes[1].value){
-                    $( this ).addClass( "active" );
-                  }
-              }
-          });
+        $('#paginador').html(response.paginacion);
+        console.log(response.total,response.limite);
+        if(response.total > response.limite){
+            $('#numRows').html(response.opcionesRenglones);
+        }else{
+            $('#numRows').html("");
         }
-        //$('.paginacionAvanzada').children().first().remove();
-        //$( ".paginacionAvanzada" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/1" data-ci-pagination-page="1">1</a>');
   		} else {
         //console.log(response);
         remove_loader();
@@ -223,9 +210,13 @@ function cambiarRenglones(obj, buscador){
           datos.busqueda = remove_acentos(datos.busqueda);
       }
       //console.log(datos);
-      busqueda(datos,"#secRespuestaBusqueda",'general', undefined);
-      //console.log($("#selectTotalRows option:eq("+num_renglones+")"));
-      //$("#selectTotalRows option:eq("+num_renglones+")").prop('selected', true)
+      busqueda(datos,"#secTabla",'general');
+    }else{
+      var datos = obtener_datos_formulario('form_buscador_avanzado');
+      var sanitizarDatos = verificarDatosAvanzado(datos);
+      sanitizarDatos.offset = 0;
+      sanitizarDatos.limit = num_renglones;
+      busqueda(sanitizarDatos,"#secTabla",'avanzada');
     }
   }
   if(buscador == 'avanzado'){
@@ -236,9 +227,7 @@ function cambiarRenglones(obj, buscador){
         sanitizarDatos.offset = 0;
         sanitizarDatos.limit = num_renglones;
         //console.log(sanitizarDatos);
-        busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada',undefined);
-        console.log($("#selectTotalRows option:eq("+num_renglones+")"));
-        //$("#selectTotalRows option:eq("+num_renglones+")").prop('selected', true)
+        busqueda(sanitizarDatos,"#secTabla",'avanzada',undefined);
       }
     }
   }

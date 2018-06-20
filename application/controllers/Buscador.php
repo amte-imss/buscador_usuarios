@@ -100,7 +100,6 @@ class Buscador extends MY_Controller {
       $output = [];
       if ($this->input->is_ajax_request()) {
           $options = array(
-            '1000'         => '1000',
             '1500'           => '1500',
             '2000'         => '2000',
             '3000'        => '3000',
@@ -115,22 +114,46 @@ class Buscador extends MY_Controller {
           $busqueda = $this->input->post('busqueda',TRUE);
           $offset = $this->input->post('pagina',TRUE);
           $limit = $this->input->post('limite',TRUE);
-          $output['opcionesRenglones'] = form_dropdown('shirts', $options,$limit,$js);
+          //$output['opcionesRenglones'] = form_dropdown('shirts', $options,$limit,$js);
+          $resultado['opcionesRenglones'] = form_dropdown('shirts', $options,$limit,$js);
           $total = count($this->buscador->obtener_busqueda($tipo,$busqueda,[]));
           $output['datos_busqueda'] = $this->input->post(NULL, TRUE);
           $this->load->library('pagination');
           $config['base_url'] = site_url('buscador/obtener_busqueda_general');
           $config['total_rows'] = $total;
           $config['per_page'] = $limit;
+
+          $config['uri_segment'] = 3;
+          //$config['use_page_numbers'] = TRUE;
+          $config['full_tag_open'] = '<ul class="pagination" id="paginacionGeneral" style="float:right;">';
+          $config['full_tag_close'] = '</ul>';
+          $config['first_tag_open'] = '<li>';
+          $config['first_tag_close'] = '</li>';
+          $config['last_tag_open'] = '<li>';
+          $config['last_tag_close'] = '</li>';
+          $config['next_link'] = '&gt;';
+          $config['next_tag_open'] = '<li>';
+          $config['next_tag_close'] = '</li>';
+          $config['prev_link'] = '&lt;';
+          $config['prev_tag_open'] = '<li>';
+          $config['prev_tag_close'] = '</li>';
+          $config['cur_tag_open'] = '<li><a href="#">';
+          $config['cur_tag_close'] = '</li></a>';
+          $config['num_tag_open'] = '<li>';
+          $config['num_tag_close'] = '</li>';
           $config['num_links'] = round($total/$limit);
-          // $config['num_tag_open'] = '<li>';
-          // $config['num_tag_close'] = '</li>';
+
           $this->pagination->initialize($config);
+
           $output['paginacion'] = $this->pagination->create_links();
+
           $output['resultado'] = $this->buscador->obtener_busqueda($tipo,$busqueda,array('limit'=>$limit, 'offset'=>$offset));
           $output['general'] = true;
           $output['total'] = $total;
-          $output['num_renglones'] = $limit = $this->input->post('limite',TRUE);
+          $output['num_renglones'] = $limit;
+          $resultado['total'] =  $total;
+          $resultado['limite'] =  $limit;
+          $resultado['paginacion'] = $output['paginacion'];
           $resultado['data'] = $this->load->view('buscador/tabla.tpl.php', $output, true);
           $resultado['resultado'] = true;
           echo json_encode($resultado);
@@ -159,9 +182,11 @@ class Buscador extends MY_Controller {
           $js = array(
             'id'=>"selectTotalRows",
             'class'=>"custom-select",
-            'onChange'=>"cambiarRenglones(this,'general')"
+            'onChange'=>"cambiarRenglones(this,'avanzado')"
           );
           $output['opcionesRenglones'] = form_dropdown('shirts', $options, $totalQuery['limit'],$js);
+          $resultado['opcionesRenglones'] = form_dropdown('shirts', $options,$totalQuery['limit'],$js);
+          $output['num_renglones'] = $totalQuery['limit'];
           unset($totalQuery['limit']);
           $tipo = "avanzada";
           $busqueda = "";
@@ -184,14 +209,36 @@ class Buscador extends MY_Controller {
           $output['total'] = $total;
           $config['total_rows'] = $total;
           $config['per_page'] = $output['datos_busqueda']['limit'];
-          $config['num_links'] = round($total/$output['datos_busqueda']['limit']);
-          // $config['num_tag_open'] = '<li>';
-          // $config['num_tag_close'] = '</li>';
+
+          $config['uri_segment'] = 3;
+          //$config['use_page_numbers'] = TRUE;
+          $config['full_tag_open'] = '<ul class="pagination" id="paginacionAvanzada" style="float:right;">';
+          $config['full_tag_close'] = '</ul>';
+          $config['first_tag_open'] = '<li>';
+          $config['first_tag_close'] = '</li>';
+          $config['last_tag_open'] = '<li>';
+          $config['last_tag_close'] = '</li>';
+          $config['next_link'] = '&gt;';
+          $config['next_tag_open'] = '<li>';
+          $config['next_tag_close'] = '</li>';
+          $config['prev_link'] = '&lt;';
+          $config['prev_tag_open'] = '<li>';
+          $config['prev_tag_close'] = '</li>';
+          $config['cur_tag_open'] = '<li><a href="#">';
+          $config['cur_tag_close'] = '</li></a>';
+          $config['num_tag_open'] = '<li>';
+          $config['num_tag_close'] = '</li>';
+          $config['num_links'] = round($total/$output['num_renglones']);
+
           $this->pagination->initialize($config);
+          $resultado['total'] =  $total;
+          $resultado['limite'] =  $output['num_renglones'];
           $output['paginacion'] = $this->pagination->create_links();
           $output['resultado'] = $this->buscador->obtener_busqueda($tipo,$busqueda,$output['datos_busqueda']);
           $output['avanzado'] = true;
-          $output['num_renglones'] = $limit = $this->input->post('limite',TRUE);
+          $resultado['total'] =  $total;
+          $resultado['limite'] =  $output['num_renglones'];
+          $resultado['paginacion'] = $output['paginacion'];
           $resultado['data'] = $this->load->view('buscador/tabla.tpl.php', $output, true);
           $resultado['resultado'] = true;
           echo json_encode($resultado);
