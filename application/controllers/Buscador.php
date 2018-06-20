@@ -99,10 +99,23 @@ class Buscador extends MY_Controller {
     public function obtener_busqueda_general(){
       $output = [];
       if ($this->input->is_ajax_request()) {
+          $options = array(
+            '1000'         => '1000',
+            '1500'           => '1500',
+            '2000'         => '2000',
+            '3000'        => '3000',
+          );
+          $js = array(
+            'id'=>"selectTotalRows",
+            'class'=>"custom-select",
+            'onChange'=>"cambiarRenglones(this,'general')"
+          );
+
           $tipo = $this->input->post('tipo', TRUE);
           $busqueda = $this->input->post('busqueda',TRUE);
           $offset = $this->input->post('pagina',TRUE);
           $limit = $this->input->post('limite',TRUE);
+          $output['opcionesRenglones'] = form_dropdown('shirts', $options,$limit,$js);
           $total = count($this->buscador->obtener_busqueda($tipo,$busqueda,[]));
           $output['datos_busqueda'] = $this->input->post(NULL, TRUE);
           $this->load->library('pagination');
@@ -110,6 +123,8 @@ class Buscador extends MY_Controller {
           $config['total_rows'] = $total;
           $config['per_page'] = $limit;
           $config['num_links'] = round($total/$limit);
+          // $config['num_tag_open'] = '<li>';
+          // $config['num_tag_close'] = '</li>';
           $this->pagination->initialize($config);
           $output['paginacion'] = $this->pagination->create_links();
           $output['resultado'] = $this->buscador->obtener_busqueda($tipo,$busqueda,array('limit'=>$limit, 'offset'=>$offset));
@@ -132,12 +147,24 @@ class Buscador extends MY_Controller {
     public function obtener_busqueda_avanzada(){
       $output = [];
       if ($this->input->is_ajax_request()) {
-          $tipo = "avanzada";
-          $busqueda = "";
           $output['datos_busqueda'] = $this->input->post(NULL, TRUE);
           $totalQuery = $output['datos_busqueda'];
           unset($totalQuery['offset']);
+          $options = array(
+            '1000'         => '1000',
+            '1500'           => '1500',
+            '2000'         => '2000',
+            '3000'        => '3000',
+          );
+          $js = array(
+            'id'=>"selectTotalRows",
+            'class'=>"custom-select",
+            'onChange'=>"cambiarRenglones(this,'general')"
+          );
+          $output['opcionesRenglones'] = form_dropdown('shirts', $options, $totalQuery['limit'],$js);
           unset($totalQuery['limit']);
+          $tipo = "avanzada";
+          $busqueda = "";
           $totalArray = $this->buscador->obtener_busqueda($tipo,$busqueda,$totalQuery);
           $totalAnd = count($totalArray['general']);
           $totalOr = count($totalArray['avanzada']);
@@ -158,6 +185,8 @@ class Buscador extends MY_Controller {
           $config['total_rows'] = $total;
           $config['per_page'] = $output['datos_busqueda']['limit'];
           $config['num_links'] = round($total/$output['datos_busqueda']['limit']);
+          // $config['num_tag_open'] = '<li>';
+          // $config['num_tag_close'] = '</li>';
           $this->pagination->initialize($config);
           $output['paginacion'] = $this->pagination->create_links();
           $output['resultado'] = $this->buscador->obtener_busqueda($tipo,$busqueda,$output['datos_busqueda']);

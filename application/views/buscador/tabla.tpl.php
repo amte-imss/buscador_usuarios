@@ -7,13 +7,7 @@ if($num_renglones < $total){
   if(isset($avanzado)){
   ?>
     <center id="centro">
-      <select id="selectTotalRows" class="custom-select" onchange="cambiarRenglones(this,'avanzado')">
-          <option value="1000">1000</option>
-          <option value="1500" selected>1500</option>
-          <option value="2000">2000</option>
-          <option value="2500">2500</option>
-          <option value="3000">3000</option>
-      </select>
+      <?php echo $opcionesRenglones; ?>
       <div class="paginacionAvanzada">
         <?php echo $paginacion; ?>
       </div>
@@ -22,13 +16,7 @@ if($num_renglones < $total){
   }elseif (isset($general)) {
   ?>
     <center id="centro">
-      <select id="selectTotalRows" class="custom-select" onchange="cambiarRenglones(this,'general')">
-          <option value="1000">1000</option>
-          <option value="1500" selected>1500</option>
-          <option value="2000">2000</option>
-          <option value="2500">2500</option>
-          <option value="3000">3000</option>
-      </select>
+      <?php echo $opcionesRenglones; ?>
       <div class="paginacionGeneral">
         <?php echo $paginacion; ?>
       </div>
@@ -173,8 +161,8 @@ if(count($resultado) > 0){
       $( ".paginacionGeneral" ).prepend( '<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0">Inicio</a>' );
 
       //agregar ultimo del paginador
-      var ultimo = $('.paginacion').children().last().attr('href');
-      $( ".paginacionGeneral" ).append( '<a href="'+ultimo+'" data-ci-pagination-page="1">Último</a>');
+      var ultimo = $('.paginacionGeneral').children().last().attr('href');
+      $( ".paginacionGeneral" ).append( '<a href="'+ultimo+'">Último</a>');
 
       //remover el primer elemento para poner otro
       $('.paginacionAvanzada').children().first().remove();
@@ -187,8 +175,8 @@ if(count($resultado) > 0){
       $( ".paginacionAvanzada" ).prepend( '<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0">Inicio</a>' );
 
       //agregar ultimo del paginador
-      var ultimo = $('.paginacion').children().last().attr('href');
-      $( ".paginacionAvanzada" ).append( '<a href="'+ultimo+'" data-ci-pagination-page="1">Último</a>');
+      var ultimo = $('.paginacionAvanzada').children().last().attr('href');
+      $( ".paginacionAvanzada" ).append( '<a href="'+ultimo+'">Último</a>');
 
 
 

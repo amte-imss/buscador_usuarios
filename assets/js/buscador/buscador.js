@@ -19,7 +19,6 @@ $(function () {
     if(datos.tipo == 'nombre'){
         datos.busqueda = remove_acentos(datos.busqueda);
     }
-    console.log(datos);
     busqueda(datos,"#secRespuestaBusqueda",'general', undefined);
     event.preventDefault();
   });
@@ -51,9 +50,8 @@ $(function () {
       var page = $(this).attr('href').split('/')[7];
       var datos = obtener_datos_formulario('form_buscador_general');
       datos.pagina = page;
-      //datos.limite = 1500;
       datos.limite = $("#selectTotalRows")[0].value;
-      console.log(datos);
+      //console.log(datos);
       busqueda(datos,"#secRespuestaBusqueda",'general', this);
 
   });
@@ -67,9 +65,7 @@ $(function () {
         var datos = obtener_datos_formulario('form_buscador_avanzado');
         var sanitizarDatos = verificarDatosAvanzado(datos);
         sanitizarDatos.offset = page;
-        datos.limite = $("#selectTotalRows")[0].value;
-        sanitizarDatos.limit = 1500;
-        //console.log(sanitizarDatos);
+        sanitizarDatos.limit = $("#selectTotalRows")[0].value;
         busqueda(sanitizarDatos,"#secRespuestaBusqueda",'avanzada', this);
   });
 })
@@ -124,7 +120,9 @@ function obtener_datos_formulario(id_formulario){
 }
 
 function convertirMayusculas(e) {
-    e.value = e.value.toUpperCase();
+  if($("#selectBusqueda")[0].value != 'correo'){
+      e.value = e.value.toUpperCase();
+  }
 }
 
 function cambiarPlaceholder(obj){
@@ -164,10 +162,12 @@ function busqueda(datos,elemento_resultado,tipo_busqueda, elementoPaginador){
         //$('.paginacion').children().first().remove();
         //$( ".paginacion" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/1" data-ci-pagination-page="1">1</a>');
   		} else {
+        remove_loader();
   			$(elemento_resultado).html(html_message(response.error, 'danger'));
   		}
   	})
   	.fail(function( jqXHR, textStatus ) {
+      remove_loader();
   		$(elemento_resultado).html("Ocurrió un error durante la búsqueda, inténtelo más tarde.");
   	})
   }
@@ -198,10 +198,12 @@ function busqueda(datos,elemento_resultado,tipo_busqueda, elementoPaginador){
         //$( ".paginacionAvanzada" ).prepend('<a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/1" data-ci-pagination-page="1">1</a>');
   		} else {
         //console.log(response);
+        remove_loader();
   			$(elemento_resultado).html(html_message(response.error, 'danger'));
   		}
   	})
   	.fail(function( jqXHR, textStatus ) {
+      remove_loader();
   		$(elemento_resultado).html("Ocurrió un error durante la búsqueda, inténtelo más tarde.");
   	})
   }
@@ -222,7 +224,7 @@ function cambiarRenglones(obj, buscador){
       }
       //console.log(datos);
       busqueda(datos,"#secRespuestaBusqueda",'general', undefined);
-      console.log($("#selectTotalRows option:eq("+num_renglones+")"));
+      //console.log($("#selectTotalRows option:eq("+num_renglones+")"));
       //$("#selectTotalRows option:eq("+num_renglones+")").prop('selected', true)
     }
   }
@@ -276,7 +278,7 @@ function obtenerOpcionesUnidad(id_delegacion){
     method: 'POST',
     dataType: 'JSON',
     beforeSend: function( xhr ) {
-      console.log("cargando ...");
+      //console.log("cargando ...");
     }
   })
   .done(function(response) {
@@ -308,7 +310,7 @@ function obtenerOpcionesDepartamento(clave_unidad){
     method: 'POST',
     dataType: 'JSON',
     beforeSend: function( xhr ) {
-      console.log("cargando ...");
+      //console.log("cargando ...");
     }
   })
   .done(function(response) {
@@ -324,7 +326,7 @@ function obtenerOpcionesDepartamento(clave_unidad){
   })
   .fail(function( jqXHR, textStatus ) {
     $('#selectDepartamento').find('option').remove().end();
-    console.log("Ocurrio un error");
+    //console.log("Ocurrio un error");
   })
 }
 

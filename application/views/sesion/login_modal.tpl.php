@@ -1,5 +1,5 @@
 
-<div class="positionCenter">
+<div class="positionCenter" style="display: flex; flex-direction: column;align-items: center;">
     <h1 class="section-title">
         <span data-animation="flipInY" data-animation-delay="300" class="icon-inner animated flipInY visible">
             <span class="fa-stack">
@@ -8,7 +8,7 @@
         </span>
         <span data-animation="fadeInRight" data-animation-delay="500" class="title-inner animated fadeInRight visible">Iniciar Sesion</span>
     </h1>
-    <div class="form-background">
+    <div class="form-background" style="width: 100%; max-width: 70%; margin-left: calc(100% - 69%);">
         <?php echo form_open('inicio/index', array('id' => 'session_form', 'autocomplete' => 'off', 'class' => 'registration-form alt')); ?>
         <!-- <form id="registration-form-alt" name="registration-form-alt" class="registration-form alt" action="#" method="post"> -->
         <div class="row">
@@ -60,10 +60,10 @@
                     <div class="captcha-container" id="captcha_first">
                         <div class="col-lg-3">
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6" style="margin-top: 20px;">
                             <img class="captcha" id="captcha_img" src="<?php echo site_url(); ?>/inicio/captcha" alt="CAPTCHA Image" />
                         </div>
-                        <div class="col-lg-3 text-right">
+                        <div class="col-lg-3 text-right" style="margin-top: 20px;">
                             <a class="btn btn-lg btn-theme" onclick="new_captcha()" style="padding: 10px 30px;">
                                 <span class="glyphicon glyphicon-refresh"></span>
                             </a>

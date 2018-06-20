@@ -21,6 +21,10 @@ class Buscador_model extends MY_Model {
            $filtros['matricula'] = $busqueda;
            return $this->obtener_usuarios($filtros,"general");
            break;
+         case 'correo':
+           $filtros['dat_valpar'] = explode("@",$busqueda)[0];
+           return $this->obtener_usuarios($filtros,"general");
+           break;
          case 'nombre':
            $filtros['P.nombre'] = $busqueda;
            $filtros['P.apellido_paterno'] = $busqueda;
@@ -46,6 +50,9 @@ class Buscador_model extends MY_Model {
                $filtros_query['offset'] = $filtros['offset'];
            }
 
+           if(isset($filtros['correo'])){
+             $filtros_query['dat_valpar'] = explode("@",$filtros['correo'])[0];
+           }
            if(isset($filtros['matricula'])){
              $filtros_query['P.matricula'] = $filtros['matricula'];
            }
@@ -107,7 +114,7 @@ class Buscador_model extends MY_Model {
                foreach ($filtros as $key => $value) {
                     if($key == 'P.nombre' || $key == 'P.apellido_paterno' || $key == 'P.apellido_materno' ||
                       $key == 'D.nombre' || $key == 'D.nombre_grupo_delegacion' || $key == 'U.nombre' || $key == 'DP.nombre' ||
-                      $key == 'C.nombre'){
+                      $key == 'C.nombre' || $key == 'dat_valpar'){
                       $this->db->or_like($key,$value);
                     }else{
                       if($key != 'limit' && $key != 'offset'){
@@ -121,7 +128,7 @@ class Buscador_model extends MY_Model {
            if (!is_null($filtros) && !empty($filtros)) {
                foreach ($filtros as $key => $value) {
                    if($key != 'limit' && $key != 'offset'){
-                     if($key == 'P.nombre' || $key == 'P.apellido_paterno' || $key == 'P.apellido_materno'){
+                     if($key == 'P.nombre' || $key == 'P.apellido_paterno' || $key == 'P.apellido_materno' || $key == 'dat_valpar'){
                        $this->db->or_like($key,$value);
                      }else{
                        $this->db->or_where($key, $value);
