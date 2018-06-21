@@ -127,33 +127,32 @@ if(count($resultado) > 0){
           window.location = $(this).data("href");
       });
 
-      //remover el primer elemento para poner otro
-      $('#paginacionGeneral').children().first().remove();
-      $( "#paginacionGeneral" ).prepend('<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0" data-ci-pagination-page="1">1</a></li>');
-
-      //remover el ultimo link del paginador (> no sirve)
-      $('#paginacionGeneral').children().last().remove();
-
-      //agregar inicio del paginador
-      $( "#paginacionGeneral" ).prepend( '<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0">Inicio</a></li>' );
-
-      //agregar ultimo del paginador
-      var ultimo = $('#paginacionGeneral').children().last().attr('href');
-      $( "#paginacionGeneral" ).append( '<li><a href="'+ultimo+'">Último</a></li>');
-
-      //remover el primer elemento para poner otro
-      $('#paginacionAvanzada').children().first().remove();
-      $( "#paginacionAvanzada" ).prepend('<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0" data-ci-pagination-page="1">1</a></li>');
-
-      //remover el ultimo link del paginador (> no sirve)
-      $('#paginacionAvanzada').children().last().remove();
-
-      //agregar inicio del paginador
-      $( "#paginacionAvanzada" ).prepend( '<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0">Inicio</a></li>' );
-
+      // //remover el primer elemento para poner otro
+      // $('#paginacionGeneral').children().first().remove();
+      // $( "#paginacionGeneral" ).prepend('<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0" data-ci-pagination-page="1">1</a></li>');
+      //
+      // //remover el ultimo link del paginador (> no sirve)
+      // $('#paginacionGeneral').children().last().remove();
+      //
+      // //agregar inicio del paginador
+      // $( "#paginacionGeneral" ).prepend( '<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_general/0">Inicio</a></li>' );
+      //
       // //agregar ultimo del paginador
-      var ultimo = $('#paginacionAvanzada').children().last().attr('href');
-      $( "#paginacionAvanzada" ).append( '<li><a href="'+ultimo+'">Último</a></li>');
-
+      // var ultimo = $('#paginacionGeneral').children().last().attr('href');
+      // $( "#paginacionGeneral" ).append( '<li><a href="'+ultimo+'">Último</a></li>');
+      //
+      // //remover el primer elemento para poner otro
+      // $('#paginacionAvanzada').children().first().remove();
+      // $( "#paginacionAvanzada" ).prepend('<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0" data-ci-pagination-page="1">1</a></li>');
+      //
+      // //remover el ultimo link del paginador (> no sirve)
+      // $('#paginacionAvanzada').children().last().remove();
+      //
+      // //agregar inicio del paginador
+      // $( "#paginacionAvanzada" ).prepend( '<li><a href="http://localhost:8080/buscador_usuarios/index.php/buscador/obtener_busqueda_avanzada/0">Inicio</a></li>' );
+      //
+      // // //agregar ultimo del paginador
+      // var ultimo = $('#paginacionAvanzada').children().last().attr('href');
+      // $( "#paginacionAvanzada" ).append( '<li><a href="'+ultimo+'">Último</a></li>');
   });
 </script>

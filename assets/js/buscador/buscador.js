@@ -19,7 +19,7 @@ $(function () {
     if(datos.tipo == 'nombre'){
         datos.busqueda = remove_acentos(datos.busqueda);
     }
-    busqueda(datos,"#secTabla",'general');
+    busqueda(datos,"#secTabla",'general',true);
     event.preventDefault();
   });
 
@@ -30,8 +30,7 @@ $(function () {
     if(Object.keys(sanitizarDatos).length > 0){
       sanitizarDatos.offset = 0;
       sanitizarDatos.limit = 1500;
-      //console.log(sanitizarDatos);
-      busqueda(sanitizarDatos,"#secTabla",'avanzada');
+      busqueda(sanitizarDatos,"#secTabla",'avanzada',true);
     }else{
       $('#error').show();
     }
@@ -44,24 +43,86 @@ $(function () {
 
   $(document).on("click", "#paginacionGeneral a", function(event){
       event.preventDefault();
+      $("#paginacionGeneral").children().each(function() {
+        if(this.className != ""){
+            this.className = "";
+        }
+      });
+      $(this)[0].parentElement.className = "active";
       var page = $(this).attr('href').split('/')[7];
-      var datos = obtener_datos_formulario('form_buscador_general');
+      var datos = obtener_datos_formulario('form_buscador_general',false);
       datos.pagina = page;
       datos.limite = $("#selectTotalRows")[0].value;
-      //console.log(datos);
       busqueda(datos,"#secTabla",'general');
-
+      //return showPage(+$(this).text());
   });
 
   $(document).on("click", "#paginacionAvanzada a", function(event){
         event.preventDefault();
+        $("#paginacionAvanzada").children().each(function() {
+          if(this.className != ""){
+              this.className = "";
+          }
+        });
+        $(this)[0].parentElement.className = "active";
         var page = $(this).attr('href').split('/')[7];
         var datos = obtener_datos_formulario('form_buscador_avanzado');
         var sanitizarDatos = verificarDatosAvanzado(datos);
         sanitizarDatos.offset = page;
         sanitizarDatos.limit = $("#selectTotalRows")[0].value;
-        busqueda(sanitizarDatos,"#secTabla",'avanzada');
+        busqueda(sanitizarDatos,"#secTabla",'avanzada',false);
+        //return showPage(+$(this).text());
   });
+
+    // // Number of items and limits the number of items per page
+    // var numberOfItems = $(".pagination li").length;
+    // var limitPerPage = 2;
+    // // Total pages rounded upwards
+    // var totalPages = Math.ceil(numberOfItems / limitPerPage);
+    // // Number of buttons at the top, not counting prev/next,
+    // // but including the dotted buttons.
+    // // Must be at least 5:
+    // var paginationSize = 7;
+    // var currentPage;
+    //
+    // function showPage(whichPage) {
+    //     if (whichPage < 1 || whichPage > totalPages) return false;
+    //     currentPage = whichPage;
+    //     $(".pagination li").hide()
+    //         .slice((currentPage-1) * limitPerPage,
+    //                 currentPage * limitPerPage).show();
+    //     // Replace the navigation items (not prev/next):
+    //     $(".pagination li").slice(1, -1).remove();
+    //     getPageList(totalPages, currentPage, paginationSize).forEach( item => {
+    //         $("<li>").addClass("page-item")
+    //                  .addClass(item ? "current-page" : "disabled")
+    //                  .toggleClass("active", item === currentPage).append(
+    //             $("<a>").addClass("page-link").attr({
+    //                 href: "javascript:void(0)"}).text(item || "...")
+    //         ).insertBefore("#next-page");
+    //     });
+    //     // Disable prev/next when at first/last page:
+    //     $("#previous-page").toggleClass("disabled", currentPage === 1);
+    //     $("#next-page").toggleClass("disabled", currentPage === totalPages);
+    //     return true;
+    // }
+    //
+    // // Show the page links
+    // $(".pagination").show();
+    // showPage(1);
+    //
+    // //Use event delegation, as these items are recreated later
+    // $(document).on("click", ".pagination li", function () {
+    //   return showPage(+$(this).text());
+    // });
+    // $("#next-page").on("click", function () {
+    //     console.log(currentPage);
+    //     return showPage(currentPage+1);
+    // });
+    //
+    // $("#previous-page").on("click", function () {
+    //     return showPage(currentPage-1);
+    // });
 })
 
 function verificarDatosAvanzado(datos){
@@ -128,7 +189,7 @@ function cambiarPlaceholder(obj){
   }
 }
 
-function busqueda(datos,elemento_resultado,tipo_busqueda){
+function busqueda(datos,elemento_resultado,tipo_busqueda,paginacion){
   $(elemento_resultado).empty();
   if(tipo_busqueda == "general"){
     $.ajax({
@@ -144,13 +205,26 @@ function busqueda(datos,elemento_resultado,tipo_busqueda){
       remove_loader();
   		if(response.resultado==true){
   			$(elemento_resultado).html(response.data);
-        $('#paginador').html(response.paginacion);
-        console.log(response.total,response.limite);
+        if(paginacion){
+            $('#paginador').html(response.paginacion);
+            // Include the prev/next buttons:
+            $(".pagination").append(
+                $("<li>").addClass("page-item").attr({ id: "previous-page" }).append(
+                    $("<a>").addClass("page-link").attr({
+                        href: "javascript:void(0)"}).text("Anterior")
+                ),
+                $("<li>").addClass("page-item").attr({ id: "next-page" }).append(
+                    $("<a>").addClass("page-link").attr({
+                        href: "javascript:void(0)"}).text("Siguiente")
+                )
+            );
+        }
         if(response.total > response.limite){
             $('#numRows').html(response.opcionesRenglones);
         }else{
             $('#numRows').html("");
         }
+
 
   		} else {
         remove_loader();
@@ -176,8 +250,9 @@ function busqueda(datos,elemento_resultado,tipo_busqueda){
       remove_loader();
   		if(response.resultado==true){
   			$(elemento_resultado).html(response.data);
-        $('#paginador').html(response.paginacion);
-        console.log(response.total,response.limite);
+        if(paginacion){
+            $('#paginador').html(response.paginacion);
+        }
         if(response.total > response.limite){
             $('#numRows').html(response.opcionesRenglones);
         }else{
@@ -351,4 +426,44 @@ function remove_acentos(cadena){
   cadena=cadena.replace('Ö','O');
   cadena=cadena.replace('Ü','U');
   return cadena;
+}
+
+// Returns an array of maxLength (or less) page numbers
+// where a 0 in the returned array denotes a gap in the series.
+// Parameters:
+//   totalPages:     total number of pages
+//   page:           current page
+//   maxLength:      maximum size of returned array
+function getPageList(totalPages, page, maxLength) {
+    if (maxLength < 5) throw "maxLength must be at least 5";
+
+    function range(start, end) {
+        return Array.from(Array(end - start + 1), (_, i) => i + start);
+    }
+
+    var sideWidth = maxLength < 9 ? 1 : 2;
+    var leftWidth = (maxLength - sideWidth*2 - 3) >> 1;
+    var rightWidth = (maxLength - sideWidth*2 - 2) >> 1;
+    if (totalPages <= maxLength) {
+        // no breaks in list
+        return range(1, totalPages);
+    }
+    if (page <= maxLength - sideWidth - 1 - rightWidth) {
+        // no break on left of page
+        return range(1, maxLength-sideWidth-1)
+            .concat([0])
+            .concat(range(totalPages-sideWidth+1, totalPages));
+    }
+    if (page >= totalPages - sideWidth - 1 - rightWidth) {
+        // no break on right of page
+        return range(1, sideWidth)
+            .concat([0])
+            .concat(range(totalPages - sideWidth - 1 - rightWidth - leftWidth, totalPages));
+    }
+    // Breaks on both sides
+    return range(1, sideWidth)
+        .concat([0])
+        .concat(range(page - leftWidth, page + rightWidth))
+        .concat([0])
+        .concat(range(totalPages-sideWidth+1, totalPages));
 }

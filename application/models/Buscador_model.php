@@ -4,10 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Buscador_model extends MY_Model {
 
-    public function __construct() {
-        // Call the CI_Model constructor
-        parent::__construct();
-    }
+      public function __construct() {
+          // Call the CI_Model constructor
+          parent::__construct();
+      }
+
 
     /**
      * Función que realiza la busqueda conforme a los filtros
@@ -15,34 +16,34 @@ class Buscador_model extends MY_Model {
      * @date 14/06/2018
      * @return array $resultado resultado de la busqueda
      */
-     public function obtener_busqueda($tipo="",$busqueda="",$filtros = []){
+     public function obtener_busqueda($tipo="",$busqueda="",$filtros = [], $contar = false){
        switch ($tipo) {
          case 'matricula':
            $filtros['matricula'] = $busqueda;
-           return $this->obtener_usuarios($filtros,"general");
+           return $this->obtener_usuarios($filtros,"general", $contar);
            break;
          case 'correo':
            $filtros['dat_valpar'] = explode("@",$busqueda)[0];
-           return $this->obtener_usuarios($filtros,"general");
+           return $this->obtener_usuarios($filtros,"general", $contar);
            break;
          case 'nombre':
            $filtros['P.nombre'] = $busqueda;
            $filtros['P.apellido_paterno'] = $busqueda;
            $filtros['P.apellido_materno'] = $busqueda;
-           return $this->obtener_usuarios($filtros,"avanzada");
+           return $this->obtener_usuarios($filtros,"avanzada", $contar);
          case 'delegacion':
            $filtros['D.nombre'] = $busqueda;
            $filtros['D.nombre_grupo_delegacion'] = $busqueda;
-           return $this->obtener_usuarios($filtros,"avanzada");
+           return $this->obtener_usuarios($filtros,"avanzada", $contar);
          case 'unidad':
            $filtros['U.nombre'] = $busqueda;
-           return $this->obtener_usuarios($filtros,"general");
+           return $this->obtener_usuarios($filtros,"general", $contar);
          case 'departamento':
            $filtros['DP.nombre'] = $busqueda;
-           return $this->obtener_usuarios($filtros,"general");
+           return $this->obtener_usuarios($filtros,"general", $contar);
          case 'categoria':
            $filtros['C.nombre'] = $busqueda;
-           return $this->obtener_usuarios($filtros,"general");
+           return $this->obtener_usuarios($filtros,"general", $contar);
          case 'avanzada':
            $filtros_query = [];
            if(isset($filtros['limit']) && isset($filtros['offset'])){
@@ -77,16 +78,15 @@ class Buscador_model extends MY_Model {
            if(isset($filtros['unidad'])){
              $filtros_query['U.clave_unidad'] = $filtros['unidad'];
            }
-           $general = $this->obtener_usuarios($filtros_query,"general");
-           $avanzada = $this->obtener_usuarios($filtros_query,"avanzada");
+           $general = $this->obtener_usuarios($filtros_query,"general", $contar);
+           $avanzada = $this->obtener_usuarios($filtros_query,"avanzada", $contar);
            $resultado['general'] = $general;
            $resultado['avanzada'] = $avanzada;
            return $resultado;
          default:
-           return $this->obtener_usuarios($filtros,"avanzada");
+           return $this->obtener_usuarios($filtros,"avanzada", $contar);
            break;
        }
-       return $this->obtener_usuarios($filtros,"general");
      }
 
      /**
@@ -100,10 +100,15 @@ class Buscador_model extends MY_Model {
       * @return array $resultado resultado del resultado de la consulta
       *
       */
-     private function obtener_usuarios($filtros = [], $tipo_buscador=""){
-         $this->db->reset_query();
-         $select = array('P.matricula','P.nombre','P.apellido_paterno','P.apellido_materno','P.dat_valpar correo','U.nombre unidad'
-         ,'D.nombre_grupo_delegacion delegacion','C.nombre categoria','DP.nombre departamento');
+     private function obtener_usuarios($filtros = [], $tipo_buscador="", $contar = false){
+         if($contar){
+           $this->db->reset_query();
+           $select = array('count("P"."matricula") total');
+         }else{
+           $select = array('P.matricula','P.nombre','P.apellido_paterno','P.apellido_materno','P.dat_valpar correo','U.nombre unidad'
+           ,'D.nombre_grupo_delegacion delegacion','C.nombre categoria','DP.nombre departamento');
+         }
+
          $this->db->select($select);
          $this->db->join('catalogo.unidad U', 'U.clave_unidad = P.clave_unidad', 'left');
          $this->db->join('catalogo.delegaciones D', 'D.id_delegacion = U.id_delegacion', 'left');
@@ -137,7 +142,9 @@ class Buscador_model extends MY_Model {
                }
            }
          }
-         $this->db->order_by("P.matricula", "desc");
+         if(!$contar){
+           $this->db->order_by("P.matricula", "desc");
+         }
          if(isset($filtros['limit']) && isset($filtros['offset'])){
            $resultado = $query = $this->db->get_where('nomina.concentrado_nomina P',[],$filtros['limit'],$filtros['offset']);
          }else{
@@ -146,6 +153,7 @@ class Buscador_model extends MY_Model {
          //pr($this->db->last_query());
          $this->db->reset_query();
          return $resultado->result_array();
+
      }
 
      /**

@@ -3,6 +3,7 @@
 <link href="<?php echo asset_url(); ?>fontawesome/web-fonts-with-css/css/fontawesome-all.min.css" rel="stylesheet">
 <script src="<?php echo asset_url(); ?>js/buscador/buscador.js"></script>
 
+
 <div id="secBuscador">
     <div id="titulos" class="row">
       <h3>Sistema</h3>

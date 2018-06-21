@@ -116,7 +116,7 @@ class Buscador extends MY_Controller {
           $limit = $this->input->post('limite',TRUE);
           //$output['opcionesRenglones'] = form_dropdown('shirts', $options,$limit,$js);
           $resultado['opcionesRenglones'] = form_dropdown('shirts', $options,$limit,$js);
-          $total = count($this->buscador->obtener_busqueda($tipo,$busqueda,[]));
+          $total = $this->buscador->obtener_busqueda($tipo,$busqueda,[],true)[0]['total'];
           $output['datos_busqueda'] = $this->input->post(NULL, TRUE);
           $this->load->library('pagination');
           $config['base_url'] = site_url('buscador/obtener_busqueda_general');
@@ -125,8 +125,8 @@ class Buscador extends MY_Controller {
 
           $config['uri_segment'] = 3;
           //$config['use_page_numbers'] = TRUE;
-          $config['full_tag_open'] = '<ul class="pagination" id="paginacionGeneral" style="float:right;">';
-          $config['full_tag_close'] = '</ul>';
+          $config['full_tag_open'] = '<nav aria-label="Page navigation"><ul class="pagination" id="paginacionGeneral" style="float:right;">';
+          $config['full_tag_close'] = '</ul></nav>';
           $config['first_tag_open'] = '<li>';
           $config['first_tag_close'] = '</li>';
           $config['last_tag_open'] = '<li>';
@@ -137,7 +137,7 @@ class Buscador extends MY_Controller {
           $config['prev_link'] = '&lt;';
           $config['prev_tag_open'] = '<li>';
           $config['prev_tag_close'] = '</li>';
-          $config['cur_tag_open'] = '<li><a href="#">';
+          $config['cur_tag_open'] = '<li class="active"><a href="'.site_url('buscador/obtener_busqueda_general/0').'">';
           $config['cur_tag_close'] = '</li></a>';
           $config['num_tag_open'] = '<li>';
           $config['num_tag_close'] = '</li>';
@@ -190,9 +190,9 @@ class Buscador extends MY_Controller {
           unset($totalQuery['limit']);
           $tipo = "avanzada";
           $busqueda = "";
-          $totalArray = $this->buscador->obtener_busqueda($tipo,$busqueda,$totalQuery);
-          $totalAnd = count($totalArray['general']);
-          $totalOr = count($totalArray['avanzada']);
+          $totalArray = $this->buscador->obtener_busqueda($tipo,$busqueda,$totalQuery,true);
+          $totalAnd = $totalArray['general'][0]['total'];
+          $totalOr = $totalArray['avanzada'][0]['total'];
           $output['totalArray'] = $totalArray;
           $output['totalAnd'] = $totalAnd;
           $output['totalOr'] = $totalOr;
@@ -212,8 +212,8 @@ class Buscador extends MY_Controller {
 
           $config['uri_segment'] = 3;
           //$config['use_page_numbers'] = TRUE;
-          $config['full_tag_open'] = '<ul class="pagination" id="paginacionAvanzada" style="float:right;">';
-          $config['full_tag_close'] = '</ul>';
+          $config['full_tag_open'] = '<nav aria-label="Page navigation"><ul class="pagination" id="paginacionAvanzada" style="float:right;">';
+          $config['full_tag_close'] = '</ul></nav>';
           $config['first_tag_open'] = '<li>';
           $config['first_tag_close'] = '</li>';
           $config['last_tag_open'] = '<li>';
@@ -224,11 +224,11 @@ class Buscador extends MY_Controller {
           $config['prev_link'] = '&lt;';
           $config['prev_tag_open'] = '<li>';
           $config['prev_tag_close'] = '</li>';
-          $config['cur_tag_open'] = '<li><a href="#">';
+          $config['cur_tag_open'] = '<li class="active"><a href="'.site_url('buscador/obtener_busqueda_general/0').'">';
           $config['cur_tag_close'] = '</li></a>';
           $config['num_tag_open'] = '<li>';
           $config['num_tag_close'] = '</li>';
-          $config['num_links'] = round($total/$output['num_renglones']);
+          $config['num_links'] = round($total/$output['num_renglones'])+10;
 
           $this->pagination->initialize($config);
           $resultado['total'] =  $total;
