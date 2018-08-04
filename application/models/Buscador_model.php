@@ -23,7 +23,7 @@ class Buscador_model extends MY_Model {
            return $this->obtener_usuarios($filtros,"general", $contar);
            break;
          case 'correo':
-           $filtros['dat_valpar'] = explode("@",$busqueda)[0];
+           $filtros['P.dat_valpar'] = explode("@",$busqueda)[0];
            return $this->obtener_usuarios($filtros,"general", $contar);
            break;
          case 'nombre':
@@ -52,7 +52,7 @@ class Buscador_model extends MY_Model {
            }
 
            if(isset($filtros['correo'])){
-             $filtros_query['dat_valpar'] = explode("@",$filtros['correo'])[0];
+             $filtros_query['P.dat_valpar'] = explode("@",$filtros['correo'])[0];
            }
            if(isset($filtros['matricula'])){
              $filtros_query['P.matricula'] = $filtros['matricula'];
@@ -105,8 +105,8 @@ class Buscador_model extends MY_Model {
            $this->db->reset_query();
            $select = array('count("P"."matricula") total');
          }else{
-           $select = array('P.matricula','P.nombre','P.apellido_paterno','P.apellido_materno','P.dat_valpar correo','U.nombre unidad'
-           ,'D.nombre_grupo_delegacion delegacion','C.nombre categoria','DP.nombre departamento');
+           $select = array('P.matricula','P.nombre','P.apellido_paterno','P.apellido_materno','P.dat_valpar correo','P.curp','U.nombre unidad'
+           ,'U.clave_unidad','D.nombre_grupo_delegacion delegacion','D.clave_delegacional','C.nombre categoria','C.clave_categoria','DP.nombre departamento');
          }
 
          $this->db->select($select);
@@ -119,7 +119,7 @@ class Buscador_model extends MY_Model {
                foreach ($filtros as $key => $value) {
                     if($key == 'P.nombre' || $key == 'P.apellido_paterno' || $key == 'P.apellido_materno' ||
                       $key == 'D.nombre' || $key == 'D.nombre_grupo_delegacion' || $key == 'U.nombre' || $key == 'DP.nombre' ||
-                      $key == 'C.nombre' || $key == 'dat_valpar'){
+                      $key == 'C.nombre' || $key == 'P.dat_valpar'){
                       $this->db->or_like($key,$value);
                     }else{
                       if($key != 'limit' && $key != 'offset'){
@@ -133,7 +133,7 @@ class Buscador_model extends MY_Model {
            if (!is_null($filtros) && !empty($filtros)) {
                foreach ($filtros as $key => $value) {
                    if($key != 'limit' && $key != 'offset'){
-                     if($key == 'P.nombre' || $key == 'P.apellido_paterno' || $key == 'P.apellido_materno' || $key == 'dat_valpar'){
+                     if($key == 'P.nombre' || $key == 'P.apellido_paterno' || $key == 'P.apellido_materno' || $key == 'P.dat_valpar'){
                        $this->db->or_like($key,$value);
                      }else{
                        $this->db->or_where($key, $value);
@@ -168,8 +168,8 @@ class Buscador_model extends MY_Model {
       */
      public function obtener_info_usuario($filtros=NULL){
        $this->db->reset_query();
-       $select = array('P.matricula','P.nombre','P.apellido_paterno','P.apellido_materno','P.dat_valpar correo','P.curp','P.rfc','U.nombre unidad'
-       ,'D.nombre_grupo_delegacion delegacion','C.nombre categoria','DP.nombre departamento', 'P.mes', 'P.anio');
+       $select = array('P.matricula','P.nombre','P.apellido_paterno','P.apellido_materno','P.dat_valpar correo','P.curp','P.rfc','P.genero','P.anti_anios','P.tipo_nomina','U.nombre unidad'
+       ,'U.clave_unidad','U.nivel_atencion','D.nombre_grupo_delegacion delegacion', 'D.clave_delegacional','C.nombre categoria','C.clave_categoria','DP.nombre departamento', 'P.mes', 'P.anio');
        $this->db->select($select);
        $this->db->join('catalogo.unidad U', 'U.clave_unidad = P.clave_unidad', 'left');
        $this->db->join('catalogo.delegaciones D', 'D.id_delegacion = U.id_delegacion', 'left');
@@ -184,6 +184,7 @@ class Buscador_model extends MY_Model {
 
        $this->db->order_by("P.anio", "desc");
        $this->db->order_by("P.mes", "desc");
+
 
        $resultado = $this->db->get('nomina.concentrado_nomina P');
        $this->db->reset_query();

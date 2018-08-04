@@ -28,9 +28,9 @@ if(count($resultado) > 0){
               <td><?php echo $value['matricula'];?></td>
               <td><?php echo $value['nombre'].' '.$value['apellido_paterno'].' '.$value['apellido_materno'];?></td>
               <td><?php if($value['correo'] == ''){echo $value['correo'];}else{echo $value['correo'].'@imss.gob.mx';}?></td>
-              <td><?php echo $value['delegacion'];?></td>
-              <td><?php echo $value['unidad'];?></td>
-              <td><?php echo $value['categoria'];?></td>
+              <td><?php echo $value['delegacion'].' - '.$value['clave_delegacional'];?></td>
+              <td><?php echo $value['unidad'].' - '.$value['clave_unidad'];?></td>
+              <td><?php echo $value['categoria'].' - '.$value['clave_categoria'];?></td>
               <td><a href="<?php echo site_url().'/buscador/index/'.$value['matricula']; ?>">Ver detalle</a></td>
             </tr>
           <?php
@@ -61,9 +61,9 @@ if(count($resultado) > 0){
                 <td><?php echo $value['matricula'];?></td>
                 <td><?php echo $value['nombre'].' '.$value['apellido_paterno'].' '.$value['apellido_materno'];?></td>
                 <td><?php if($value['correo'] == ''){echo $value['correo'];}else{echo $value['correo'].'@imss.gob.mx';}?></td>
-                <td><?php echo $value['delegacion'];?></td>
-                <td><?php echo $value['unidad'];?></td>
-                <td><?php echo $value['categoria'];?></td>
+                <td><?php echo $value['delegacion'].' - '.$value['clave_delegacional'];?></td>
+                <td><?php echo $value['unidad'].' '.$value['clave_unidad'];?></td>
+                <td><?php echo $value['categoria'].' - '.$value['clave_categoria'];?></td>
                 <td><a href="<?php echo site_url().'/buscador/index/'.$value['matricula']; ?>">Ver detalle</a></td>
               </tr>
             <?php
@@ -90,6 +90,7 @@ if(count($resultado) > 0){
           <th scope="col">Correo</th>
           <th scope="col">Delegación</th>
           <th scope="col">Unidad</th>
+          <th scope="col">CURP_</th>
           <th scope="col">Categoría</th>
           <th scope="col">Acciones</th>
         </tr>
@@ -97,14 +98,16 @@ if(count($resultado) > 0){
       <tbody>
         <?php foreach ($resultado as $value)
         {
+           //pr ($value);
         ?>
           <tr class='clickable-row' data-href="<?php echo site_url().'/buscador/index/'.$value['matricula']; ?>" style="cursor:pointer;">
             <td><?php echo $value['matricula'];?></td>
             <td><?php echo $value['nombre'].' '.$value['apellido_paterno'].' '.$value['apellido_materno'];?></td>
-            <td><?php if($value['correo'] == ''){echo $value['correo'];}else{echo $value['correo'].'@imss.gob.mx';}?></td>
-            <td><?php echo $value['delegacion'];?></td>
-            <td><?php echo $value['unidad'];?></td>
-            <td><?php echo $value['categoria'];?></td>
+            <td><?php echo ($value['correo'] != '')? $value['correo'].'@imss.gob.mx':"";?></td>
+            <td><?php echo $value['delegacion'].' - '.$value['clave_delegacional'];?></td>
+            <td><?php echo $value['unidad'].' - '.$value['clave_unidad'];?></td>
+            <td><?php echo $value['curp'];?></td>
+            <td><?php echo $value['categoria'].' - '.$value['clave_categoria'];?></td>
             <td><a href="<?php echo site_url().'/buscador/index/'.$value['matricula']; ?>">Ver detalle</a></td>
           </tr>
         <?php

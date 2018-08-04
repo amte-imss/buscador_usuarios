@@ -13,6 +13,7 @@
             <th scope="col">Unidad</th>
             <th scope="col">Categoría</th>
             <th scope="col">Departamento</th>
+            <th scope="col">CURP</th>
             <th scope="col">Mes</th>
             <th scope="col">Año</th>
           </tr>
@@ -25,10 +26,11 @@
               <td><?php echo $value['matricula'];?></td>
               <td><?php echo $value['nombre'].' '.$value['apellido_paterno'].' '.$value['apellido_materno'];?></td>
               <td><?php if($value['correo'] == ''){echo $value['correo'];}else{echo $value['correo'].'@imss.gob.mx';}?></td>
-              <td><?php echo $value['delegacion'];?></td>
-              <td><?php echo $value['unidad'];?></td>
-              <td><?php echo $value['categoria'];?></td>
+              <td><?php echo $value['delegacion'].' - '.$value['clave_delegacional'];?></td>
+              <td><?php echo $value['unidad'].' - '.$value['clave_unidad'];?></td>
+              <td><?php echo $value['categoria'].' - '.$value['clave_categoria'];?></td>
               <td><?php echo $value['departamento'];?></td>
+              <td><?php echo $value['curp'];?></td>
               <td><?php echo obtener_mes($value['mes']);?></td>
               <td><?php echo $value['anio'];?></td>
             </tr>
