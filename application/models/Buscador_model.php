@@ -110,6 +110,7 @@ class Buscador_model extends MY_Model {
          }
 
          $this->db->select($select);
+         $this->db->distinct();
          $this->db->join('catalogo.unidad U', 'U.clave_unidad = P.clave_unidad', 'left');
          $this->db->join('catalogo.delegaciones D', 'D.id_delegacion = U.id_delegacion', 'left');
          $this->db->join('catalogo.categorias C', 'C.clave_categoria = P.clave_puesto', 'left');
