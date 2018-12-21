@@ -20,6 +20,7 @@ class Usuario extends MY_Controller {
         $this->load->library('seguridad');
         $this->load->library('empleados_siap');
         $this->load->library('form_validation');
+        //$this->load->library('en_tpmsg');
         $this->load->model('Usuario_model', 'usuario');
         $this->template->setTitle('Usuarios');
     }
@@ -53,7 +54,7 @@ class Usuario extends MY_Controller {
         $params['where'] = array(
             'usuarios.id_usuario' => $id_usuario
         );
-        $params['select'] = array(
+        /*$params['select'] = array(
             'inf.es_imss',
             'usuarios.id_usuario', 'usuarios.activo usuario_activo',
             'inf.matricula', 'inf.rfc','inf.curp',
@@ -63,6 +64,9 @@ class Usuario extends MY_Controller {
             'dep.clave_departamental','dep.nombre departamento',
             'uni.clave_unidad','uni.nombre unidad',
             'cat.clave_categoria','cat.nombre categoria'
+        );*/
+        $params['select'] = array(
+            'usuarios.id_usuario', 'usuarios.activo usuario_activo', 'usuarios.username', 'usuarios.email'
         );
         $resultado = $this->usuario->get_usuarios($params);
         //pr($resultado);
@@ -77,7 +81,7 @@ class Usuario extends MY_Controller {
         $this->load->model('Catalogo_model', 'catalogo');
         $output['language_text'] = $this->language_text;
         $output['usuario'] = $this->obtener_db_usuario($usuario);
-        $output['paises'] = dropdown_options($this->catalogo->get_paises(), "clave_pais", "lang", $this->obtener_idioma());
+        //$output['paises'] = dropdown_options($this->catalogo->get_paises(), "clave_pais", "lang", $this->obtener_idioma());
         $output['datos_basicos'] = $this->load->view('usuario/datos_basicos.tpl.php', $output, true);
         $output['grupos_usuario'] = $this->usuario->get_niveles_acceso($output['usuario']['id_usuario']);
         $output['campo_password'] = $this->load->view('usuario/campo_password.tpl.php', $output, true);
@@ -102,7 +106,8 @@ class Usuario extends MY_Controller {
         );
         */
         $filtros['select'] = array(
-            'usuarios.id_usuario','usuarios.username', 'concat(inf.nombre, $$ $$, inf.apellido_paterno, $$ $$, inf.apellido_materno) nombre_completo', 'del.nombre delegacion', 'inf.es_imss', 'usuarios.activo','(select array_agg(nombre) from sistema.roles R join sistema.usuario_rol UR on R.clave_rol=UR.clave_rol and UR.id_usuario=usuarios.id_usuario and UR.activo=true) as rol'
+            //'usuarios.id_usuario','usuarios.username', 'concat(inf.nombre, $$ $$, inf.apellido_paterno, $$ $$, inf.apellido_materno) nombre_completo', 'del.nombre delegacion', 'inf.es_imss', 'usuarios.activo','(select array_agg(nombre) from sistema.roles R join sistema.usuario_rol UR on R.clave_rol=UR.clave_rol and UR.id_usuario=usuarios.id_usuario and UR.activo=true) as rol'
+            'usuarios.id_usuario','usuarios.username', 'usuarios.username nombre_completo', 'usuarios.activo','(select array_agg(nombre) from sistema.roles R join sistema.usuario_rol UR on R.clave_rol=UR.clave_rol and UR.id_usuario=usuarios.id_usuario and UR.activo=true) as rol'
         );
 
         $usuarios['data'] = $this->usuario->get_usuarios($filtros); //exit();
@@ -153,25 +158,27 @@ class Usuario extends MY_Controller {
     }
 
     public function editar($id_usuario = 0, $tipo = Usuario::BASICOS) {
+        $this->load->library('En_tpmsg');
         $salida['tp_msg'] = En_tpmsg::DANGER;
         $output['status'] = false;
         $view = '';
         $post = $this->input->post(null,true);
-        $es_imss = false;
+        //$es_imss = false;
         if($post) {
             $this->config->load('form_validation'); //Cargar archivo con validaciones
             switch ($tipo) {
                 case Usuario::BASICOS:
                     $params['where'] = array('usuarios.id_usuario' => $id_usuario);
-                    $params['select'] = array('es_imss');
+                    //$params['select'] = array('es_imss');
+                    //pr($params);
                     $resultado = $this->usuario->get_usuarios($params);
 
-                    $es_imss = $resultado[0]['es_imss'];
-                    if($es_imss){
+                    /*$es_imss = $resultado[0]['es_imss'];
+                    if($es_imss){*/
                         $validations = $this->config->item('form_actualizar_interno');
-                    }else{
+                    /*}else{
                         $validations = $this->config->item('form_actualizar_externo');
-                    }
+                    }*/
                     //$view = $this->get_datos_basicos($id_usuario);
                     break;
                 case Usuario::PASSWORD:
@@ -189,14 +196,14 @@ class Usuario extends MY_Controller {
             $this->form_validation->set_rules($validations); //Añadir validaciones
             if ($this->form_validation->run() == TRUE) {
                 $params = $this->input->post(null, true);
-                if($es_imss){
+                /*if($es_imss){
                     unset($params['categoria']);
                     unset($params['unidad']);
                     unset($params['departamento']);
                     unset($params['matricula']);
                     unset($params['curp']);
                     unset($params['rfc']);
-                }
+                }*/
                 $params['id_usuario'] = $id_usuario;
                 if($this->usuario->update($tipo, $params)){
                     $salida['tp_msg'] = En_tpmsg::SUCCESS;
@@ -213,7 +220,7 @@ class Usuario extends MY_Controller {
             switch ($tipo) {
                 case Usuario::BASICOS:
                     $this->load->model('Catalogo_model', 'catalogo');
-                    $output['paises'] = dropdown_options($this->catalogo->get_paises(), "clave_pais", "lang", $this->obtener_idioma());
+                    //$output['paises'] = dropdown_options($this->catalogo->get_paises(), "clave_pais", "lang", $this->obtener_idioma());
                     $output['usuario'] = $this->obtener_db_usuario($id_usuario);
                     $view = $this->load->view('usuario/datos_basicos.tpl.php', $output, true);
                     break;
@@ -233,7 +240,7 @@ class Usuario extends MY_Controller {
         $params['where'] = array(
             'usuarios.id_usuario' => $id_usuario
         );
-        $params['select'] = array(
+        /*$params['select'] = array(
             'inf.es_imss',
             'usuarios.id_usuario', 'usuarios.activo usuario_activo',
             'inf.matricula', 'inf.rfc','inf.curp',
@@ -243,6 +250,10 @@ class Usuario extends MY_Controller {
             'dep.clave_departamental','dep.nombre departamento',
             'uni.clave_unidad','uni.nombre unidad',
             'cat.clave_categoria','cat.nombre categoria'
+        );*/
+        $params['select'] = array(
+            //'usuarios.id_usuario', 'usuarios.activo usuario_activo',
+            'usuarios.id_usuario','usuarios.username', 'usuarios.username nombre_completo', 'usuarios.activo','(select array_agg(nombre) from sistema.roles R join sistema.usuario_rol UR on R.clave_rol=UR.clave_rol and UR.id_usuario=usuarios.id_usuario and UR.activo=true) as rol'
         );
         $resultado = $this->usuario->get_usuarios($params);
         if (count($resultado) == 1) {

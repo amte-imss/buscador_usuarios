@@ -513,7 +513,8 @@ class Usuario_model extends MY_Model {
         $this->db->where('id_usuario', $params['id_usuario']);
         $user = $params['id_usuario'];
         unset($params['id_usuario']);
-        $this->db->update('sistema.informacion_usuario', $params);
+        unset($params['username']);
+        $this->db->update('sistema.usuarios', $params);
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
         }else{

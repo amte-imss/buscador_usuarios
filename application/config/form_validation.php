@@ -1026,6 +1026,11 @@ $config['form_actualizar_externo'] = array(
 
 $config['form_actualizar_interno'] = array(
     array(
+        'field' => 'email',
+        'label' => 'E-mail',
+        'rules' => 'trim|required|valida_correo_electronico|is_unico_datos_usuarios[email]' //|callback_valid_pass
+    )
+    /*array(
         'field' => 'nombre',
         'label' => 'Nombre',
         'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot'
@@ -1064,7 +1069,7 @@ $config['form_actualizar_interno'] = array(
         'field' => 'clave_pais',
         'label' => '',
         'rules' => 'required'
-    )
+    )*/
 );
 
 // VALIDACIONES

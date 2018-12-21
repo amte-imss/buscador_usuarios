@@ -376,8 +376,8 @@ class MY_Form_validation extends CI_Form_validation {
 //        pr($field);
 //        pr($str);
         $this->CI = & get_instance();
-        $this->CI->load->model('Usuario_model', 'us');
-        $result = $this->CI->us->is_unico_datos_usuarios($field, $str);
+        $this->CI->load->model('Usuario_model', 'usm');
+        $result = $this->CI->usm->is_unico_datos_usuarios($field, $str);
         return $result;
     }
 
