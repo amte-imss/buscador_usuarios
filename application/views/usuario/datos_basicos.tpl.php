@@ -7,355 +7,263 @@ if (isset($status) && $status)
 ?>
 
 <div class="col-md-12 form-inline" role="form" id="informacion_general">
-
-    <form class="form-horizontal" id="form_datos_generales" method="post" accept-charset="utf-8">
-
-
-<div class="row">
-
-    <div class="col-md-2">
-       <label class="righthoralign control-label">
-      Matrícula: </label>
+  <!--<form class="form-horizontal" id="form_datos_generales" method="post" accept-charset="utf-8">-->
+<?php 
+  if($usuario['es_imss']){
+?>
+  <div class="col-sm-12">
+    <div class="col-sm-4">
+      <label> Matrícula: </label>
+      <br>
+      <?php
+        echo $this->form_complete->create_element(array(
+            'id' => 'matricula',
+            'type' => 'text',
+            'value' => $usuario['matricula'],
+            'attributes' => array(
+                'readonly' => '',
+                'class' => 'form-control',
+                'style' => 'color: #6d7a83'
+            )));
+      ?>
     </div>
-    <div class="col-md-4">
-        <div class="input-group">
-          <span class="input-group-addon">
-              <span class="fa fa-male"> </span>
-          </span>
-            <?php
-                echo $this->form_complete->create_element(array(
-                    'id' => 'matricula',
-                    'type' => 'text',
-                    'value' => $usuario['matricula'],
-                    'attributes' => array(
-                        'readonly' => ' ',
-                        'class' => 'form-control',
-                        'required' => true
-                    )));
-            ?>
-
+    <div class="col-sm-4">
+      <label> RFC: </label>
+      <br>
+      <?php
+        echo $this->form_complete->create_element(array(
+            'id' => 'rfc',
+            'type' => 'text',
+            'value' => $usuario['rfc'],
+            'attributes' => array(
+                'readonly' => '',
+                'class' => 'form-control',
+                'style' => 'color: #6d7a83'
+            )));
+      ?>
+    </div>
+    <div class="col-sm-4">
+      <label> CURP: </label>
+      <br>
+      <?php
+        echo $this->form_complete->create_element(array(
+            'id' => 'curp',
+            'type' => 'text',
+            'value' => $usuario['curp'],
+            'attributes' => array(
+                'readonly' => '',
+                'class' => 'form-control',
+                'style' => 'color: #6d7a83'
+            )));
+      ?>
+    </div>
+  </div>
+<?php
+  }
+?>
+  <div class="col-sm-12"><br></div>
+  <div class="col-sm-12">
+    <div class="col-sm-4">
+      <label> Nombre: </label>
+      <br>
+      <?php
+      echo $this->form_complete->create_element(array(
+          'id' => 'nombre',
+          'type' => 'text',
+          'value' => $usuario['nombre'],
+          'attributes' => array('class' => 'form-control')));
+      ?>
+      <?php echo form_error_format('nombre');?>
+    </div>
+    <div class="col-sm-4">
+      <label> Apellido paterno: </label>
+      <br>
+      <?php
+      echo $this->form_complete->create_element(array(
+          'id' => 'apellido_paterno',
+          'type' => 'text',
+          'value' => $usuario['apellido_paterno'],
+          'attributes' => array('class' => 'form-control')));
+      ?>
+      <?php echo form_error_format('apellido_paterno');?>
+    </div>
+    <div class="col-sm-4">
+      <label> Apellido materno: </label>
+      <br>
+      <?php
+      echo $this->form_complete->create_element(array(
+          'id' => 'apellido_materno',
+          'type' => 'text',
+          'value' => $usuario['apellido_materno'],
+          'attributes' => array('class' => 'form-control')));
+      ?>
+      <?php echo form_error_format('apellido_materno');?>
+    </div>
+  </div>
+  <div class="col-sm-12"><br></div>
+  <div class="col-sm-12">
+    <div class="col-sm-8">
+        <div class="col-sm-12" style="padding-left:  0;">
+          <label> Genero: </label>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-4">
-              <label for="materno" class="control-label">
-                  Nombre:</label>
+        <div class="col-sm-12">
+          <div class="col-md-3">
+              <?php echo form_radio(array('name' => 'sexo', 'value' => En_sexo::MASCULINO, 'checked' => (isset($usuario['sexo']) && $usuario['sexo'] == 'M') ? true : false, 'id' => 'sexo')) . form_label($language_text['registro_usuario']['ext_sexo_m'], 'male'); ?>
           </div>
-            <div class="col-md-8">
-              <div class="input-group">
-                <span class="input-group-addon">
-                    <span class="fa fa-female"> </span>
-                </span>
-                <?php
-                echo $this->form_complete->create_element(array(
-                    'id' => 'nombre',
-                    'type' => 'text',
-                    'value' => $usuario['nombre'],
-                    'attributes' => array('class' => 'form-control', 'required' => true)));
-                ?>
-              </div>
-            </div>
-        </div>
-    </div>
-</div>
-<br>
-<div class="row">
-
-    <div class="col-md-2">
-       <label class="righthoralign control-label">
-      Apellido paterno: </label>
-    </div>
-    <div class="col-md-4">
-        <div class="input-group">
-          <span class="input-group-addon">
-              <span class="fa fa-male"> </span>
-          </span>
-          <?php
-          echo $this->form_complete->create_element(array(
-              'id' => 'apellido_paterno',
-              'type' => 'text',
-              'value' => $usuario['apellido_paterno'],
-              'attributes' => array('class' => 'form-control', 'required' => true)));
-          ?>
-
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-4">
-              <label for="materno" class="control-label">
-                  Apellido materno:</label>
+          <div class="col-md-3">
+              <?php echo form_radio(array('name' => 'sexo', 'value' => En_sexo::FEMENINO, 'checked' => (isset($usuario['sexo']) && $usuario['sexo'] == 'F') ? true : false, 'id' => 'sexo')) . form_label($language_text['registro_usuario']['ext_sexo_f'], 'female'); ?>
           </div>
-            <div class="col-md-8">
-              <div class="input-group">
-                <span class="input-group-addon">
-                    <span class="fa fa-female"> </span>
-                </span>
-                <?php
-                echo $this->form_complete->create_element(array(
-                    'id' => 'apellido_materno',
-                    'type' => 'text',
-                    'value' => $usuario['apellido_materno'],
-                    'attributes' => array('class' => 'form-control')));
-                ?>
-              </div>
-            </div>
-        </div>
-    </div>
-</div>
-<br>
-
-<div class="row">
-
-    <div class="col-md-2">
-       <label class="righthoralign control-label">
-      Sexo: </label>
-    </div>
-    <div class="col-md-4">
-        <div class="input-group">
-          <span class="input-group-addon">
-              <span class="fa fa-male"> </span>
-          </span>
-          <?php
-          echo $this->form_complete->create_element(array(
-              'id' => 'sexo',
-              'type' => 'dropdown',
-              'value' => $usuario['sexo'],
-              'options' => array(En_sexo::MASCULINO=>$language_text['registro_usuario']['ext_sexo_m'], En_sexo::FEMENINO=>$language_text['registro_usuario']['ext_sexo_f'], En_sexo::OTRO=>$language_text['registro_usuario']['ext_sexo_o']),
-              'attributes' => array('class' => 'form-control', 'required' => true)));
-          ?>
-
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-4">
-              <label for="materno" class="control-label">
-                  Fecha de nacimiento:</label>
+          <div class="col-md-3">
+              <?php echo form_radio(array('name' => 'sexo', 'value' => En_sexo::OTRO, 'checked' => (isset($usuario['sexo']) && $usuario['sexo'] == 'O') ? true : false, 'id' => 'sexo')) . form_label($language_text['registro_usuario']['ext_sexo_o'], 'otro'); ?>
           </div>
-            <div class="col-md-8">
-              <div class="input-group">
-                <span class="input-group-addon">
-                    <span class="fa fa-female"> </span>
-                </span>
-                <?php
-                echo $this->form_complete->create_element(array(
-                    'id' => 'fecha_nacimiento',
-                    'type' => 'date',
-                    'value' => $usuario['fecha_nacimiento'],
-                    'attributes' => array('class' => 'form-control', 'required' => true)));
-                ?>
-              </div>
-            </div>
-        </div>
-    </div>
-</div>
-<br>
-<div class="row">
-
-    <div class="col-md-2">
-       <label class="righthoralign control-label">
-      Correo electrónico: </label>
-    </div>
-    <div class="col-md-4">
-        <div class="input-group">
-          <span class="input-group-addon">
-              <span class="fa fa-male"> </span>
-          </span>
-          <?php
-          echo $this->form_complete->create_element(array(
-              'id' => 'email',
-              'type' => 'email',
-              'value' => $usuario['email'],
-              'attributes' => array('name' => 'email', 'class' => 'form-control', 'required' => true)));
-          ?>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-4">
-              <label for="materno" class="control-label">
-                  Departamento:</label>
-          </div>
-            <div class="col-md-8">
-              <div class="input-group">
-                <span class="input-group-addon">
-                    <span class="fa fa-female"> </span>
-                </span>
-                <input type="hidden" name="departamento" id="departamento" value="<?php echo $usuario['clave_departamental']; ?>">
-                <?php
-                echo $this->form_complete->create_element(array(
-                    'id' => 'departamento_texto',
-                    'type' => 'text',
-                    'value' => $usuario['clave_departamental'],
-                    'attributes' => array('name' => 'departamento_texto', 'class' => 'form-control', 'autocomplete' => 'off', 'required' => true)));
-                ?>
-                <ul class="ul-autocomplete" id="unidad_autocomplete" style="display:none;">
-
-                </ul>
-              </div>
-            </div>
-        </div>
-    </div>
-</div>
-<br>
-
-<div class="row">
-
-    <div class="col-md-2">
-       <label class="righthoralign control-label">
-      Categoría: </label>
-    </div>
-    <div class="col-md-4">
-        <div class="input-group">
-          <span class="input-group-addon">
-              <span class="fa fa-male"> </span>
-          </span>
-          <input type="hidden" name="categoria" id="categoria" value="<?php echo $usuario['id_categoria']; ?>">
-          <?php
-          echo $this->form_complete->create_element(array(
-              'id' => 'categoria_texto',
-              'type' => 'text',
-              'value' => $usuario['clave_categoria'],
-              'attributes' => array(
-                  'name' => 'categoria_texto',
-                  'class' => 'form-control',
-                  'autocomplete' => 'off',
-                  'required' => true
-              )));
-          ?>
-          <ul class="ul-autocomplete" id="categoria_autocomplete" style="display:none;">
-
-          </ul>
-        </div>
-    </div>
-    <!-- <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-4">
-              <label for="materno" class="control-label">
-                  Clave de contratación:</label>
-          </div>
-            <div class="col-md-8">
-              <div class="input-group">
-                <span class="input-group-addon">
-                    <span class="fa fa-female"> </span>
-                </span>
-                <?php
-                echo $this->form_complete->create_element(array(
-                    'id' => 'cve_tipo_contratacion',
-                    'type' => 'text',
-                    'value' => $usuario['cve_tipo_contratacion'],
-                    'attributes' => array('class' => 'form-control')));
-                ?>
-              </div>
-            </div>
-        </div>
-    </div> -->
-</div>
-<br>
-<div class="row">
-
-    <div class="col-md-2">
-       <label class="righthoralign control-label">
-      CURP: </label>
-    </div>
-    <div class="col-md-4">
-        <div class="input-group">
-          <span class="input-group-addon">
-              <span class="fa fa-male"> </span>
-          </span>
-          <?php
-          echo $this->form_complete->create_element(array(
-              'id' => 'curp',
-              'type' => 'text',
-              'value' => $usuario['curp'],
-              'attributes' => array('class' => 'form-control', 'required' => true)));
-          ?>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-4">
-              <label for="materno" class="control-label">
-                  RFC: </label>
-          </div>
-            <div class="col-md-8">
-              <div class="input-group">
-                <span class="input-group-addon">
-                    <span class="fa fa-female"> </span>
-                </span>
-                <?php
-                echo $this->form_complete->create_element(array(
-                    'id' => 'rfc',
-                    'type' => 'text',
-                    'value' => $usuario['rfc'],
-                    'attributes' => array('class' => 'form-control')));
-                ?>
-              </div>
-            </div>
-        </div>
-    </div>
-</div>
-<br>
-
-
-<div class="row">
-
-    <div class="col-md-2">
-       <label class="righthoralign control-label">
-      Teléfono laboral: </label>
-    </div>
-    <div class="col-md-4">
-        <div class="input-group">
-          <span class="input-group-addon">
-              <span class="fa fa-male"> </span>
-          </span>
-          <?php
-          echo $this->form_complete->create_element(array(
-              'id' => 'telefono_oficina',
-              'type' => 'text',
-              'value' => $usuario['telefono_oficina'],
-              'attributes' => array('class' => 'form-control')));
-          ?>
       </div>
-        </div>
-
-    <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-4">
-              <label for="materno" class="control-label">
-                  Teléfono particular: </label>
-          </div>
-            <div class="col-md-8">
-              <div class="input-group">
-                <span class="input-group-addon">
-                    <span class="fa fa-female"> </span>
-                </span>
-                <?php
-                echo $this->form_complete->create_element(array(
-                    'id' => 'telefono_personal',
-                    'type' => 'text',
-                    'value' => $usuario['telefono_personal'],
-                    'attributes' => array('class' => 'form-control')));
-                ?>
-              </div>
-            </div>
-        </div>
+      <?php echo form_error_format('sexo');?>
     </div>
+    <div class="col-sm-4">
+      <label> País: </label>
+      <br>
+      <?php
+        echo $this->form_complete->create_element(array('id' => 'clave_pais',
+          'type' => 'dropdown',
+          'first' => array('' => $language_text['registro_usuario']['pais_origen']),
+          'options' => $paises,
+          'value' => isset($usuario['clave_pais']) ? $usuario['clave_pais'] : 'MX',
+          'attributes' => array(
+              'class' => 'form-control',
+              'style' => 'max-width:210px'
+        )));
+      ?>
+      <?php echo form_error_format('clave_pais');?>
+    </div>
+  </div>
+  <div class="col-sm-12"><br></div>
+  <div class="col-sm-12">
+    <div class="col-sm-4">
+      <label> Correo electrónico: </label>
+      <br>
+      <?php
+      echo $this->form_complete->create_element(array(
+          'id' => 'email',
+          'type' => 'text',
+          'value' => $usuario['email'],
+          'attributes' => array('class' => 'form-control')));
+      ?>
+      <?php echo form_error_format('email');?>
+    </div>
+    <div class="col-sm-4">
+      <label> Teléfono personal: </label>
+      <br>
+      <?php
+      echo $this->form_complete->create_element(array(
+          'id' => 'telefono_personal',
+          'type' => 'text',
+          'value' => $usuario['telefono_personal'],
+          'attributes' => array('class' => 'form-control')));
+      ?>
+      <?php echo form_error_format('telefono_personal');?>
+    </div>
+    <div class="col-sm-4">
+      <label> Teléfono oficina: </label>
+      <br>
+      <?php
+      echo $this->form_complete->create_element(array(
+          'id' => 'telefono_oficina',
+          'type' => 'text',
+          'value' => $usuario['telefono_oficina'],
+          'attributes' => array('class' => 'form-control')));
+      ?>
+      <?php echo form_error_format('telefono_oficina');?>
+    </div>
+  </div>
+<?php if(!$usuario['es_imss']){ ?>
+  <div class="col-sm-12"><br></div>
+  <div class="col-sm-12">
+    <div class="col-sm-4">
+      <label> País de institución: </label>
+      <br>
+      <?php
+        echo $this->form_complete->create_element(array('id' => 'pais_institucion',
+          'type' => 'dropdown',
+          'first' => array('' => $language_text['registro_usuario']['pais_institucion']),
+          'options' => $paises,
+          'value' => isset($usuario['pais_institucion']) ? $usuario['pais_institucion'] : 'MX',
+          'attributes' => array(
+              'class' => 'form-control',
+              'style' => 'max-width:210px'
+        )));
+      ?>
+      <?php echo form_error_format('pais_institucion');?>
+    </div>
+    <div class="col-sm-4">
+      <label> Institución: </label>
+      <br>
+      <?php
+      echo $this->form_complete->create_element(array(
+          'id' => 'institucion',
+          'type' => 'text',
+          'value' => $usuario['institucion'],
+          'attributes' => array('class' => 'form-control')));
+      ?>
+      <?php echo form_error_format('institucion');?>
+    </div>
+  </div>
+<?php } ?>
+<?php if($usuario['es_imss']){ ?>
+  <div class="col-sm-12"><br></div>
+  <div class="col-sm-12">
+    <div class="col-sm-4">
+      <label> Categoría: </label>
+      <br>
+      <?php
+      echo $this->form_complete->create_element(array(
+          'id' => 'categoria',
+          'type' => 'text',
+          'value' => $usuario['categoria'],
+          'attributes' => array(
+                'readonly' => '',
+                'class' => 'form-control',
+                'style' => 'color: #6d7a83'
+            )));
+      ?>
+    </div>
+    <div class="col-sm-4">
+      <label> Unidad: </label>
+      <br>
+      <?php
+      echo $this->form_complete->create_element(array(
+          'id' => 'unidad',
+          'type' => 'text',
+          'value' => $usuario['unidad'],
+          'attributes' => array(
+                'readonly' => '',
+                'class' => 'form-control',
+                'style' => 'color: #6d7a83'
+            )));
+      ?>
+    </div>
+    <div class="col-sm-4">
+      <label> Departamento: </label>
+      <br>
+      <?php
+      echo $this->form_complete->create_element(array(
+          'id' => 'departamento',
+          'type' => 'text',
+          'value' => $usuario['departamento'],
+          'attributes' => array(
+                'readonly' => '',
+                'class' => 'form-control',
+                'style' => 'color: #6d7a83'
+            )));
+      ?>
+    </div>
+  </div>
+<?php } ?>
+  <!--</form>-->
 </div>
-
-</form>
-</div>
-
-<br>
+<div class="col-sm-12"><br></div>
 <div class="col-md-12">
-  <div class="col-md-5">
-
-  </div>
+  <div class="col-md-5"></div>
   <div class="col-md-1">
-      <label class=" control-label"></label>
-      <button id="submit" name="submit" type="submit" class="btn btn-success"  style=" background-color:#008EAD">Guardar <span class=""></span></button>
+    <button name="submit" type="submit" class="btn btn-success"  style=" background-color:#008EAD">Guardar <span class=""></span></button>
   </div>
-
 </div>

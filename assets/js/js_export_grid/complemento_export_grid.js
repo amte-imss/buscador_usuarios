@@ -142,7 +142,7 @@ function remove_headers(headers, unset_headers) {
 
 function jsgrid_generales_final_no_agregar_registros_error() {
     /**
-     * 
+     *
      * @type jsGrid.loadStrategies.DirectLoadingStrategy.prototype.finishInsert|window.jsGrid.loadStrategies.DirectLoadingStrategy.prototype.finishInsert
      */
     var origFinishInsert = jsGrid.loadStrategies.DirectLoadingStrategy.prototype.finishInsert;

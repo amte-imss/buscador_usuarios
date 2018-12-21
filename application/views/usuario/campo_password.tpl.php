@@ -35,5 +35,5 @@ if (isset($status) && $status)
   <div class="col-md-5">
   </div>
     <label class="col-md-4 control-label"></label>
-    <button id="submit" name="submit" type="submit" class="btn btn-success"  style=" background-color:#008EAD">Guardar <span class=""></span></button>
+    <button name="submit" type="submit" class="btn btn-success"  style=" background-color:#008EAD">Guardar <span class=""></span></button>
 </div>

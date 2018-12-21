@@ -1,5 +1,7 @@
 <?php
+
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 /**
  * Clase que contiene métodos para la carga de la plantilla base del sistema y creación de la paginación
  * @version 	: 1.1.0
@@ -31,7 +33,8 @@ class Template {
             "cuerpo_modal" => null,
             "blank" => null,
             'date_picker' => true,
-            'notificaciones_estaticas' => null
+            'notificaciones_estaticas' => null,
+            'lang_system' => null
         );
 
         $this->elements_modal = array(
@@ -39,9 +42,7 @@ class Template {
             "modal_cuerpo" => null, //Cuerpo del modal, contenido reelevante
             "modal_pie" => null, //Píe del modal, normalmente se usa para disponer de un botón de cerrar y/o botones de guardado u actualización de algun formulario
         );
-
     }
-
 
     /* Retorna el atributo elements
      * @method: array getData()
@@ -101,7 +102,7 @@ class Template {
     function setTitle($title = null) {
         $this->elements["title"] = $title;
     }
-    
+
     /**
      * @author LEAS
      * @fecha 27/04/2018
@@ -109,6 +110,15 @@ class Template {
      */
     function setLanguageText($language_text = null) {
         $this->elements["language_text"] = $language_text;
+    }
+
+    /**
+     * @author LEAS
+     * @fecha 27/04/2018
+     * @param type $lang Agrega el lenguaje actual
+     */
+    function setLang($lang = null) {
+        $this->elements["lang_system"] = $lang;
     }
 
     /*
@@ -121,7 +131,6 @@ class Template {
 
     function setNav($menu = NULL) {
         //$vista_menu = $this->CI->load->view('tc_template/menu.tpl.php', $menu, TRUE);
-
         //$this->elements["menu"] = $vista_menu;
         $this->elements["menu"] = $menu;
     }
@@ -232,13 +241,11 @@ class Template {
         $this->datos_imagen_perfil = $imagen_perfil; //Obtener imagen del docente
     }
 
-    function enable_date_picker($v = true)
-    {
+    function enable_date_picker($v = true) {
         $this->elements['date_picker'] = $v;
     }
 
-    function set_notificaciones_estaticas($notificaciones)
-    {
+    function set_notificaciones_estaticas($notificaciones) {
         $this->elements['notificaciones_estaticas'] = $notificaciones;
         // pr($this->elements['notificaciones_estaticas']);
     }

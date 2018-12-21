@@ -5,6 +5,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Usuario_model extends MY_Model {
 
     const NO_SIAP = 'no_siap', SIAP = 'siap', NO_IMSS = 'no_imss';
+    const LIMIT = 10, LISTA = 'lista', BASICOS = 'basico', PASSWORD = 'password',
+            NIVELES_ACCESO = 'niveles', STATUS_ACTIVIDAD = 'actividad';
 
     public function __construct() {
         // Call the CI_Model constructor
@@ -255,7 +257,7 @@ class Usuario_model extends MY_Model {
     }
 
     /**
-     * 
+     *
      * @param type $datos usuario
       informacion_usuario
       historico_informacion_usuario
@@ -274,7 +276,7 @@ class Usuario_model extends MY_Model {
         // pr($docente);
 
         if (!is_null($docente)) {
-            if (isset($datos['docente'])) {
+            if (isset($datos['informacion_usuario'])) {
                 $datos['informacion_usuario']['id_usuario'] = $id_usuario;
 //                $datos['usuario']['id_docente'] = $docente['id_informacion_usuario'];
                 $this->db->where('id_informacion_usuario', $docente['id_informacion_usuario']);
@@ -363,7 +365,7 @@ class Usuario_model extends MY_Model {
             if (isset($params['select'])) {
                 $select = $params['select'];
             } else if ($params['informacion_docente']) {
-                $select = array("case when usuarios.username is null then usuarios.email else usuarios.username end username",
+                /*$select = array("case when usuarios.username is null then usuarios.email else usuarios.username end username",
                     "usuarios.email",
                     "usuarios.id_usuario", "coalesce(inf.matricula, usuarios.username) matricula",
                     "usuarios.clave_idioma lenguaje",
@@ -373,6 +375,11 @@ class Usuario_model extends MY_Model {
                     "cat.clave_categoria", "cat.id_categoria", "cat.nombre categoria",
                     "inf.curp", "inf.rfc"
                     , "inf.email", "inf.clave_delegacional", "del.nombre delegacion"
+                );*/
+                $select = array("case when usuarios.username is null then usuarios.email else usuarios.username end username",
+                    "usuarios.email",
+                    "usuarios.id_usuario", "usuarios.username matricula",
+                    "usuarios.clave_idioma lenguaje"
                 );
             } else {
                 $select = array(
@@ -383,12 +390,12 @@ class Usuario_model extends MY_Model {
         $this->db->select($select, false);
         $this->db->from('sistema.usuarios usuarios');
 //        if ($params['informacion_docente']) {
-        $this->db->join('sistema.informacion_usuario inf', 'inf.id_usuario = usuarios.id_usuario', 'left');
-        $this->db->join('sistema.historico_informacion_usuario hinf', 'hinf.id_informacion_usuario = inf.id_informacion_usuario and hinf.actual', 'left');
-        $this->db->join('catalogo.departamento dep', 'dep.clave_departamental = hinf.clave_departamental', 'left');
-        $this->db->join('catalogo.unidad uni', 'uni.clave_unidad = dep.clave_unidad and uni.anio = extract(year from CURRENT_DATE)', 'left');
-        $this->db->join('catalogo.categorias cat', 'cat.id_categoria = hinf.id_categoria', 'left');
-        $this->db->join('catalogo.delegaciones del', 'del.clave_delegacional = inf.clave_delegacional', 'left');
+        //$this->db->join('sistema.informacion_usuario inf', 'inf.id_usuario = usuarios.id_usuario', 'left');
+        //$this->db->join('sistema.historico_informacion_usuario hinf', 'hinf.id_informacion_usuario = inf.id_informacion_usuario and hinf.actual', 'left');
+        //$this->db->join('catalogo.departamento dep', 'dep.clave_departamental = hinf.clave_departamental', 'left');
+        //$this->db->join('catalogo.unidad uni', 'uni.clave_unidad = dep.clave_unidad and uni.anio = extract(year from CURRENT_DATE)', 'left');
+        //$this->db->join('catalogo.categorias cat', 'cat.id_categoria = hinf.id_categoria', 'left');
+        //$this->db->join('catalogo.delegaciones del', 'del.clave_delegacional = inf.clave_delegacional', 'left');
 //        }
 
         if (isset($params['where'])) {
@@ -412,6 +419,13 @@ class Usuario_model extends MY_Model {
             }
         }
 
+        if(isset($params['ilike'])){
+            foreach ($params['ilike'] as $key => $value) {
+                $this->db->like($key,strtoupper($value));
+                $this->db->or_like($key,strtolower($value));
+            }
+        }
+
         if (isset($params['limit']) && isset($params['offset']) && !isset($params['total'])) {
             $this->db->limit($params['limit'], $params['offset']);
         } else if (isset($params['limit']) && !isset($params['total'])) {
@@ -423,7 +437,8 @@ class Usuario_model extends MY_Model {
         }
         //pr($this->db->get_compiled_select());
         $query = $this->db->get();
-        //pr($this->db->last_query()); exit();
+        //pr($this->db->last_query());
+        //exit();
         if ($query) {
             $usuarios = $query->result_array();
             $query->free_result(); //Libera la memoria
@@ -451,19 +466,19 @@ class Usuario_model extends MY_Model {
         return $niveles;
     }
 
-    public function update($tipo = Usuario::BASICOS, $params = []) {
+    public function update($tipo = Usuario_model::BASICOS, $params = []) {
         $salida = false;
         switch ($tipo) {
-            case Usuario::BASICOS:
+            case Usuario_model::BASICOS:
                 $salida = $this->update_basicos($params);
                 break;
-            case Usuario::PASSWORD:
+            case Usuario_model::PASSWORD:
                 $salida = $this->update_password($params);
                 break;
-            case Usuario::NIVELES_ACCESO:
+            case Usuario_model::NIVELES_ACCESO:
                 $salida = $this->update_niveles_acceso($params);
                 break;
-            case Usuario::STATUS_ACTIVIDAD:
+            case Usuario_model::STATUS_ACTIVIDAD:
                 $salida = $this->update_status_actividad($params);
                 break;
         }
@@ -481,23 +496,40 @@ class Usuario_model extends MY_Model {
             $this->db->update('sistema.usuarios');
             $salida = true;
         } catch (Exception $ex) {
-            
+
         }
         $this->db->reset_query();
         return $salida;
     }
 
+
+
     private function update_basicos($params = []) {
+      //  pr($params);
         $this->db->flush_cache();
         $this->db->reset_query();
-        $salida = false;
+
         $this->db->trans_begin();
-        $params['where'] = array(
-            'usuarios.id_usuario' => $params['id_usuario']
-        );
+        $this->db->where('id_usuario', $params['id_usuario']);
+        $user = $params['id_usuario'];
+        unset($params['id_usuario']);
+        $this->db->update('sistema.informacion_usuario', $params);
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+        }else{
+          $this->db->set('email', $params['email']);
+          $this->db->where('id_usuario', $user);
+          $this->db->update('sistema.usuarios');
+          //pr($params);
 
-
-        $resultado = $this->usuario->get_usuarios($params);
+          if ($this->db->trans_status() === FALSE) {
+              $this->db->trans_rollback();
+          }else{
+            $this->db->trans_commit();
+            $salida = true;
+          }
+        }
+        /*
         if (count($resultado) == 1) {
             $usuario = $resultado[0];
             $docente = array(
@@ -541,6 +573,7 @@ class Usuario_model extends MY_Model {
         }
         $this->db->flush_cache();
         $this->db->reset_query();
+        */
         return $salida;
     }
 
@@ -822,4 +855,55 @@ class Usuario_model extends MY_Model {
         return (empty($query));
     }
 
+    /**
+    * Permite actualizar la informacion de un usuario
+    * @author clapas
+    * @date 15/06/2018
+    * @param array
+    * @return boolean
+    */
+    public function actualizar_informacion($params=array())
+    {
+        $salida = false;
+        $this->db->flush_cache();
+        $this->db->reset_query();
+
+        $this->db->trans_begin();
+        $this->db->where($params['where']);
+        $this->db->set($params['datos']);
+        $this->db->update('sistema.informacion_usuario');
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+        }else{
+            $this->db->trans_commit();
+            $salida = true;
+        }
+
+        return $salida;
+    }
+
+    /**
+    * Devuelve la informacion de un usuario
+    * @author clapas
+    * @date 18/06/2018
+    * @param array
+    * @return array
+    */
+    public function obtener_informacion_usuario($params=array())
+    {
+        $this->db->flush_cache();
+        $this->db->reset_query();
+
+        if(isset($params['select'])){
+            $this->db->where($params['select']);
+        }
+
+        if(isset($params['where'])){
+            $this->db->where($params['where']);
+        }
+
+        $query = $this->db->get('sistema.informacion_usuario');
+        return $query->result_array();
+    }
 }

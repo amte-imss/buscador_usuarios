@@ -80,11 +80,11 @@ $db['default'] = array(
     // 'username' => 'innovaedu',
     // 'password' => 'nPgEoXCqd/?gV.,',
     // 'database' => 'sipimss_bitacoras',
-    'dsn' => 'pgsql:host=localhost;port=5432;dbname=sbn',
-    'hostname' => 'localhost',
-    'username' => 'postgres',
-    'password' => '11M5user',
-    'database' => 'sbn',
+    'dsn' => 'pgsql:host=11.32.41.238;port=5432;dbname=buscador1',
+    'hostname' => '11.32.41.238',
+    'username' => 'innovaedu',
+    'password' => 'innovaedu',
+    'database' => 'buscador1',
     'dbdriver' => 'pdo',
     'port' => '5432',
     'dbprefix' => '',
@@ -104,13 +104,12 @@ $db['default'] = array(
 //    'date_default_timezone_set' => 'America/Kolkata'
 );
 
-
 $db['bitacoras'] = array(
-    'dsn' => 'pgsql:host=localhost;port=5432;dbname=foro_20180601',
-    'hostname' => 'localhost',
-    'username' => 'clapas_imss',
-    'password' => 'logan',
-    'database' => 'foro_20180601',
+    'dsn' => 'pgsql:host=11.32.41.238;port=5432;dbname=buscador1',
+    'hostname' => '11.32.41.238',
+    'username' => 'innovaedu',
+    'password' => 'innovaedu',
+    'database' => 'buscador1',
     'dbdriver' => 'pdo',
     'port' => '5432',
 
@@ -129,3 +128,63 @@ $db['bitacoras'] = array(
     'failover' => array(),
     'save_queries' => TRUE
 );
+
+/*$db['default'] = array(
+    // 'dsn' => 'pgsql:host=localhost;port=5433;dbname=foro_imss_2',
+    // 'hostname' => 'localhost',
+    // 'username' => 'innovaedu',
+    // 'password' => 'nPgEoXCqd/?gV.,',
+    // 'database' => 'sipimss_bitacoras',
+    // 'dsn' => 'pgsql:host=localhost;port=5432;dbname=foro_imss',
+    // 'hostname' => 'localhost',
+    // 'username' => 'postgres',
+    // 'password' => 'postgresql',
+    // 'database' => 'foro_imss',
+    'dsn' => 'pgsql:host=localhost;port=5432;dbname=foro06082018',
+    'hostname' => 'localhost',
+    'username' => 'clapas_imss',
+    'password' => 'logan',
+    'database' => 'foro06082018',
+    'dbdriver' => 'pdo',
+    'port' => '5433',
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => (ENVIRONMENT !== 'desarrollo'),
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'schema' => 'sistema,catalogo,ui,censo,idiomas,foro',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE,
+//    'date_default_timezone_set' => 'America/Kolkata'
+);
+
+$db['bitacoras'] = array(
+    'dsn' => 'pgsql:host=localhost;port=5433;dbname=foro06082018',
+    'hostname' => 'localhost',
+    'username' => 'clapas_imss',
+    'password' => 'logan',
+    'database' => 'foro06082018',
+    'dbdriver' => 'pdo',
+    'port' => '5433',
+
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => (ENVIRONMENT !== 'desarrollo'),
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'schema' => 'sistema,bitacora',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE
+);*/

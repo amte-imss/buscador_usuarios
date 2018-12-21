@@ -173,12 +173,12 @@ $config['form_user_update_password'] = array(
     array(
         'field' => 'pass',
         'label' => 'Contraseña',
-        'rules' => 'required|min_length[8]'
+        'rules' => 'trim|required|min_length[8]'
     ),
     array(
         'field' => 'pass_confirm',
         'label' => 'Confirmar contraseña',
-        'rules' => 'required|min_length[8]' //|callback_valid_pass
+        'rules' => 'trim|required|matches[pass]' //|callback_valid_pass
     ),
 );
 
@@ -318,12 +318,12 @@ $config['form_registro_usuario'] = array(
     array(
         'field' => 'reg_password',
         'label' => 'Contraseña',
-        'rules' => 'required' //|callback_valid_pass
+        'rules' => 'trim|required|min_length[8]' //|callback_valid_pass
     ),
     array(
         'field' => 'reg_repassword',
         'label' => 'Confirmación contraseña',
-        'rules' => 'required|matches[reg_password]'
+        'rules' => 'trim|required|matches[reg_password]'
     ),
     array(
         'field' => 'reg_captcha',
@@ -729,17 +729,12 @@ $config['insert_catalogo_departamento'] = array(
 
 $config['update_catalogo_departamento'] = array(
     array(
-        'field' => 'id_departamento_instituto',
-        'label' => 'ID',
-        'rules' => 'required|is_numeric'
-    ),
-    array(
         'field' => 'clave_unidad',
         'label' => 'Clave unidad',
         'rules' => 'required'
     ),
     array(
-        'field' => 'departamento',
+        'field' => 'nombre',
         'label' => 'Nombre de la adscripción',
         'rules' => 'required'
     ),
@@ -813,6 +808,263 @@ $config["valida_evaluacion_revision"] = array(
         'label' => 'Observaciones',
         'rules' => 'required'
     ),
+);
+$config['form_editar_usuario_externos'] = array(
+    array(
+        'field' => 'ext_nombre',
+        'label' => 'Nombre',
+        'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot'
+    ),
+    array(
+        'field' => 'ext_ap',
+        'label' => '',
+        'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'ext_am',
+        'label' => '',
+        'rules' => 'trim|max[100]|alpha_accent_space_dot_quot' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'ext_mail',
+        'label' => 'E-mail',
+        'rules' => 'trim|required|valida_correo_electronico' //|is_unico_datos_usuarios[email] //|callback_valid_pass
+    ),
+    array(
+        'field' => 'sexo',
+        'label' => 'Sexo',
+        'rules' => 'trim|required' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'pais_institucion',
+        'label' => '',
+        'rules' => 'required'
+    ),
+    array(
+        'field' => 'institucion',
+        'label' => '',
+        'rules' => 'required|max[100]'
+    ),
+    array(
+        'field' => 'telefono_oficina',
+        'label' => '',
+        'rules' => 'max[50]|alpha_numeric_accent_space_dot'
+    ),
+    array(
+        'field' => 'telefono_personal',
+        'label' => '',
+        'rules' => 'required|max[50]|alpha_numeric_accent_space_dot'
+    ),
+    array(
+        'field' => 'pais_origen',
+        'label' => '',
+        'rules' => 'required'
+    )
+);
+
+$config['form_editar_usuario_internos'] = array(
+    array(
+        'field' => 'ext_nombre',
+        'label' => 'Nombre',
+        'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot'
+    ),
+    array(
+        'field' => 'ext_ap',
+        'label' => '',
+        'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'ext_am',
+        'label' => '',
+        'rules' => 'trim|max[100]|alpha_accent_space_dot_quot' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'ext_mail',
+        'label' => 'E-mail',
+        'rules' => 'trim|required|valida_correo_electronico' //|is_unico_datos_usuarios[email] //|callback_valid_pass
+    ),
+    array(
+        'field' => 'sexo',
+        'label' => 'Sexo',
+        'rules' => 'trim|required' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'telefono_oficina',
+        'label' => '',
+        'rules' => 'max[50]|alpha_numeric_accent_space_dot'
+    ),
+    array(
+        'field' => 'telefono_personal',
+        'label' => '',
+        'rules' => 'required|max[50]|alpha_numeric_accent_space_dot'
+    ),
+    array(
+        'field' => 'pais_origen',
+        'label' => '',
+        'rules' => 'required'
+    )
+);
+
+$config['form_editar_password'] = array(
+    array(
+        'field' => 'reg_password',
+        'label' => 'Contraseña',
+        'rules' => 'trim|required|min_length[8]' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'reg_repassword',
+        'label' => 'Confirmación contraseña',
+        'rules' => 'trim|required|matches[reg_password]'
+    )
+);
+
+$config['form_editar_usuario_externos'] = array(
+    array(
+        'field' => 'ext_nombre',
+        'label' => 'Nombre',
+        'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot'
+    ),
+    array(
+        'field' => 'ext_ap',
+        'label' => '',
+        'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'ext_am',
+        'label' => '',
+        'rules' => 'trim|max[100]|alpha_accent_space_dot_quot' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'ext_mail',
+        'label' => 'E-mail',
+        'rules' => 'trim|required|valida_correo_electronico' //|is_unico_datos_usuarios[email] //|callback_valid_pass
+    ),
+    array(
+        'field' => 'sexo',
+        'label' => 'Sexo',
+        'rules' => 'trim|required' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'pais_institucion',
+        'label' => '',
+        'rules' => 'required'
+    ),
+    array(
+        'field' => 'institucion',
+        'label' => '',
+        'rules' => 'required|max[100]'
+    ),
+    array(
+        'field' => 'telefono_oficina',
+        'label' => '',
+        'rules' => 'max[50]|alpha_numeric_accent_space_dot'
+    ),
+    array(
+        'field' => 'telefono_personal',
+        'label' => '',
+        'rules' => 'required|max[50]|alpha_numeric_accent_space_dot'
+    ),
+    array(
+        'field' => 'pais_origen',
+        'label' => '',
+        'rules' => 'required'
+    )
+);
+
+$config['form_actualizar_externo'] = array(
+    array(
+        'field' => 'nombre',
+        'label' => 'Nombre',
+        'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot'
+    ),
+    array(
+        'field' => 'apellido_paterno',
+        'label' => '',
+        'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'apellido_materno',
+        'label' => '',
+        'rules' => 'trim|max[100]|alpha_accent_space_dot_quot' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'email',
+        'label' => 'E-mail',
+        'rules' => 'trim|required|valida_correo_electronico' //|is_unico_datos_usuarios[email] //|callback_valid_pass
+    ),
+    array(
+        'field' => 'sexo',
+        'label' => 'Sexo',
+        'rules' => 'trim|required' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'pais_institucion',
+        'label' => '',
+        'rules' => 'required'
+    ),
+    array(
+        'field' => 'institucion',
+        'label' => '',
+        'rules' => 'required|max[100]'
+    ),
+    array(
+        'field' => 'telefono_oficina',
+        'label' => '',
+        'rules' => 'max[50]|alpha_numeric_accent_space_dot'
+    ),
+    array(
+        'field' => 'telefono_personal',
+        'label' => '',
+        'rules' => 'required|max[50]|alpha_numeric_accent_space_dot'
+    ),
+    array(
+        'field' => 'clave_pais',
+        'label' => '',
+        'rules' => 'required'
+    )
+);
+
+$config['form_actualizar_interno'] = array(
+    array(
+        'field' => 'nombre',
+        'label' => 'Nombre',
+        'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot'
+    ),
+    array(
+        'field' => 'apellido_paterno',
+        'label' => '',
+        'rules' => 'trim|required|max[100]|alpha_accent_space_dot_quot' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'apellido_materno',
+        'label' => '',
+        'rules' => 'trim|max[100]|alpha_accent_space_dot_quot' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'email',
+        'label' => 'E-mail',
+        'rules' => 'trim|required|valida_correo_electronico|is_unico_datos_usuarios[email]' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'sexo',
+        'label' => 'Sexo',
+        'rules' => 'trim|required' //|callback_valid_pass
+    ),
+    array(
+        'field' => 'telefono_oficina',
+        'label' => '',
+        'rules' => 'max[50]|alpha_numeric_accent_space_dot'
+    ),
+    array(
+        'field' => 'telefono_personal',
+        'label' => '',
+        'rules' => 'required|max[50]|alpha_numeric_accent_space_dot'
+    ),
+    array(
+        'field' => 'clave_pais',
+        'label' => '',
+        'rules' => 'required'
+    )
 );
 
 // VALIDACIONES

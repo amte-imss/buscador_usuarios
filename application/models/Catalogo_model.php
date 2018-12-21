@@ -29,7 +29,9 @@ class Catalogo_model extends MY_Model {
     public function get_delegaciones($filtros = [], $adicionales = []) {
         $this->db->flush_cache();
         $this->db->reset_query();
-        $select = array();
+        $select = array(
+            'clave_delegacional', 'nombre',
+        );
         $this->db->select($select);
         $this->db->where('activo', TRUE);
         if (!is_null($filtros) && !empty($filtros)) {
@@ -433,37 +435,6 @@ class Catalogo_model extends MY_Model {
     }
 
     /**
-     * Función que obtiene datos de una tabla especifica
-     * del esquema catalogo
-     * @author Cheko
-     * @date 14/06/2018
-     * @param string $tabla nombre de la tabla
-     * @param array $filtros filtros para obtener las unidades
-     * @return array $resultado datos obtenidos de la base de datos
-     *
-     */
-     public function obtener_datos_tabla($tabla, $filtros = []){
-       $this->db->flush_cache();
-       $this->db->reset_query();
-       $select = array();
-       $this->db->select($select);
-       //$this->db->where('activo', TRUE);
-       if (!is_null($filtros) && !empty($filtros)) {
-           foreach ($filtros as $key => $value) {
-               $this->db->where($key, $value);
-           }
-       }
-      //if (is_null($adicionales) || !isset($adicionales['oficinas_centrales']) || (isset($adicionales['oficinas_centrales']) && !$adicionales['oficinas_centrales'])) {
-        //$this->db->where("clave_delegacional!= '09'");
-      //}
-
-       $this->db->order_by("nombre");
-       $resultado = $this->db->get('catalogo.'.$tabla);
-       //pr($this->db->last_query());
-       return $resultado->result_array();
-     }
-
-    /**
      * Función que obtiene la sección del foro
      * @author Cheko
      * @date 29/05/2018
@@ -638,4 +609,97 @@ class Catalogo_model extends MY_Model {
             }
             return $estado;
          }
+         public function insert_registro($nombre_tabla = null, &$params = [], $return_last_id = true) {
+             $this->db->flush_cache();
+             $this->db->reset_query();
+             $status = array('success' => false, 'message' => 'Nombre de tabla incorrecto', 'data' => []);
+             if (is_null($nombre_tabla)) {
+                 return $status;
+             }
+
+             try {
+                 $this->db->insert($nombre_tabla, $params);
+                 $status['success'] = true;
+                 $status['message'] = 'Agregado con éxito';
+                 if ($return_last_id) {
+                     $status['data'] = array('id_elemento' => $this->db->insert_id());
+                 }
+             } catch (Exception $ex) {
+
+             }
+             return $status;
+         }
+
+         public function update_registro($nombre_tabla = null, &$params = [], $where_ids = []) {
+             $this->db->flush_cache();
+             $this->db->reset_query();
+             $status = array('success' => false, 'message' => 'Nombre de tabla incorrecto', 'data' => []);
+             if (is_null($nombre_tabla)) {
+                 return $status;
+             }
+             try {
+                 $this->db->update($nombre_tabla, $params, $where_ids);
+                 $status['success'] = true;
+                 $status['message'] = 'Actualizado con éxito';
+             } catch (Exception $ex) {
+
+             }
+             return $status;
+         }
+
+         public function delete_registros($nombre_tabla = null, $where_ids = []) {
+             $this->db->flush_cache();
+             $this->db->reset_query();
+             $status = array('success' => false, 'message' => 'Nombre de tabla incorrecto', 'data' => []);
+             if (is_null($nombre_tabla)) {
+                 return $status;
+             }
+             try {
+                 foreach ($where_ids as $key => $value) {
+                     $this->db->where($key, $value);
+                 }
+                 $this->db->delete($nombre_tabla);
+                 $status['success'] = true;
+                 $status['message'] = 'Eliminado con éxito';
+             } catch (Exception $ex) {
+
+             }
+             $this->db->reset_query();
+             return $status;
+         }
+
+    /**
+    * Devuelve los tipos de metodolgias activas
+    * @author clapas
+    * @date 13/08/2018
+    * @return array
+    */
+    public function tipos_metodologias()
+    {
+        $this->db->flush_cache();
+        $this->db->reset_query();
+
+        $this->db->select(array('id_tipo_metodologia','lang'));
+        $this->db->where('activo',true);
+        $res = $this->db->get('foro.tipo_metodologia');
+
+        return $res->result_array();
+    }
+
+    /**
+    * Devuelve los tipos de metodolgias activas
+    * @author clapas
+    * @date 15/08/2018
+    * @return array
+    */
+    public function secciones_evaluacion()
+    {
+        $this->db->flush_cache();
+        $this->db->reset_query();
+
+        $this->db->select(array('id_seccion','descripcion'));
+        $res = $this->db->get('foro.seccion');
+
+        return $res->result_array();
+    }
 }

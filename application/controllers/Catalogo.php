@@ -240,7 +240,7 @@ class Catalogo extends MY_Controller {
     public function departamento($opcion = '', $id = null) {
         $this->load->model('Catalogo_model', 'catalogo');
         // $this->load->config('catalogos');
-        $filtros = $this->config->item('catalogo.departamentos_instituto');
+        $filtros = $this->config->item('catalogo.departamentos');
         $output = [];
         $output['js'] = '/catalogo/departamento.js';
         $output['exportar'] = site_url('catalogo/departamento/exportar');
@@ -255,10 +255,10 @@ class Catalogo extends MY_Controller {
                     'clave_unidad' => 'departamentos.clave_unidad'
                 ));
                 // pr($filtros);
-                $registros['data'] = $this->catalogo->get_registros('catalogo.departamentos_instituto departamentos', $filtros);
+                $registros['data'] = $this->catalogo->get_registros('catalogo.departamento departamentos', $filtros);
                 // $registros['query'] = $this->db->last_query();
                 $filtros['total'] = true;
-                $total = $this->catalogo->get_registros('catalogo.departamentos_instituto departamentos', $filtros)[0]['total'];
+                $total = $this->catalogo->get_registros('catalogo.departamento departamentos', $filtros)[0]['total'];
                 $registros['length'] = $total;
                 header('Content-Type: application/json; charset=utf-8;');
                 echo json_encode($registros);
@@ -279,8 +279,8 @@ class Catalogo extends MY_Controller {
                 break;
             case Catalogo::EXPORTAR:
                 $file_name = 'catalogo_adscripciones_' . date('Ymd_his', time());
-                $filtros = $this->config->item('catalogo.departamentos_instituto');
-                $registros['data'] = $this->catalogo->get_registros('catalogo.departamentos_instituto departamentos', $filtros);
+                $filtros = $this->config->item('catalogo.departamento');
+                $registros['data'] = $this->catalogo->get_registros('catalogo.departamento departamentos', $filtros);
                 $registros['columnas'] = array(
                     "id_departamento_instituto",
                     "Adscripción",
@@ -300,8 +300,8 @@ class Catalogo extends MY_Controller {
 
     private function eliminar_departamento(&$params) {
         if ($this->input->post()) {
-            $where_ids = array('id_departamento_instituto' => $params['id_departamento_instituto']);
-            $result = $this->catalogo->delete_registros('catalogo.departamentos_instituto', $where_ids);
+            $where_ids = array('clave_departamental' => $params['clave_departamental']);
+            $result = $this->catalogo->delete_registros('catalogo.departamento', $where_ids);
             header('Content-Type: application/json; charset=utf-8;');
             echo json_encode($result);
         }
@@ -318,7 +318,7 @@ class Catalogo extends MY_Controller {
                     'clave_unidad' => $params['clave_unidad'],
                     'clave_departamental' => $params['clave_departamental']
                 );
-                $result = $this->catalogo->insert_registro('catalogo.departamentos_instituto', $form);
+                $result = $this->catalogo->insert_registro('catalogo.departamento', $form);
             } else {
                 $result['success'] = false;
                 $result['message'] = validation_errors();
@@ -334,22 +334,25 @@ class Catalogo extends MY_Controller {
             $this->config->load('form_validation'); //Cargar archivo con validaciones
             $validations = $this->config->item('update_catalogo_departamento'); //Obtener validaciones de archivo general
             $this->form_validation->set_rules($validations); //Añadir validaciones
+            $ids = array(
+                'clave_departamental' => $params['clave_departamental']
+            );
             if ($this->form_validation->run() == TRUE) {
                 $form = array(
-                    'nombre' => $params['departamento'],
+                    'nombre' => $params['nombre'],
                     'clave_unidad' => $params['clave_unidad'],
                     'clave_departamental' => $params['clave_departamental']
                 );
-                $ids = array(
-                    'id_departamento_instituto' => $params['id_departamento_instituto']
-                );
-                $result = $this->catalogo->update_registro('catalogo.departamentos_instituto', $form, $ids);
+                // $ids = array(
+                //     'clave_departamental' => $params['clave_departamental']
+                // );
+                $result = $this->catalogo->update_registro('catalogo.departamento', $form, $ids);
             } else {
                 $result['success'] = false;
                 $result['message'] = validation_errors();
             }
             $result['data'] = $params;
-            $result['data']['id_departamento_instituto'] = $ids['id_departamento_instituto'];
+            $result['data']['clave_departamental'] = $ids['clave_departamental'];
             header('Content-Type: application/json; charset=utf-8;');
             echo json_encode($result);
         }
@@ -477,7 +480,7 @@ class Catalogo extends MY_Controller {
     public function unidad_instituto($opcion = '', $id = null) {
         $this->load->model('Catalogo_model', 'catalogo');
         // $this->load->config('catalogos');
-        $filtros = $this->config->item('catalogo.unidades_instituto');
+        $filtros = $this->config->item('catalogo.unidad');
         $output = [];
         $output['js'] = '/catalogo/unidad_instituto.js';
         $output['exportar'] = site_url('catalogo/unidad_instituto/exportar');
@@ -499,10 +502,10 @@ class Catalogo extends MY_Controller {
                     'anio' => 'unidades.anio'
                         )
                 );
-                $registros['data'] = $this->catalogo->get_registros('catalogo.unidades_instituto unidades', $filtros);
+                $registros['data'] = $this->catalogo->get_registros('catalogo.unidad unidades', $filtros);
                 // $registros['query'] = $this->db->last_query();
                 $filtros['total'] = true;
-                $total = $this->catalogo->get_registros('catalogo.unidades_instituto unidades', $filtros)[0]['total'];
+                $total = $this->catalogo->get_registros('catalogo.unidad unidades', $filtros)[0]['total'];
                 $registros['length'] = $total;
                 header('Content-Type: application/json; charset=utf-8;');
                 echo json_encode($registros);
@@ -516,8 +519,8 @@ class Catalogo extends MY_Controller {
                 break;
             case Catalogo::EXPORTAR:
                 $file_name = 'catalogo_categorias_' . date('Ymd_his', time());
-                $filtros = $this->config->item('catalogo.unidades_instituto completo');
-                $registros['data'] = $this->catalogo->get_registros('catalogo.unidades_instituto unidades', $filtros);
+                $filtros = $this->config->item('catalogo.unidad completo');
+                $registros['data'] = $this->catalogo->get_registros('catalogo.unidad unidades', $filtros);
                 $registros['columnas'] = array(
                     'id_unidad_instituto', 'nombre', 'clave_unidad', 'anio',
                     'nivel_atencion', 'id_tipo_unidad', 'umae', 'clave_presupuestal',
@@ -874,12 +877,12 @@ class Catalogo extends MY_Controller {
                $crud->add_fields('id_seccion','descripcion','id_rango');
                $crud->edit_fields('id_seccion','descripcion','id_rango');
                $crud->required_fields('id_seccion','descripcion');
-               $crud->set_relation('id_seccion','seccion','id_seccion');
-               $crud->set_relation('id_rango','rango','id_rango');
+               $crud->set_relation('id_seccion','seccion','descripcion',null,'id_seccion asc');
+               $crud->set_relation('id_rango','rango','cualitativa',null,'id_rango asc');
 
                if($crud->getState() == 'success' || $crud->getState() == 'list'){
-                 $crud->callback_column($this->unique_field_name('id_seccion'),array($this,'_callback_cambiar_id_seccion'));
-                 $crud->callback_column($this->unique_field_name('id_rango'),array($this,'_callback_cambiar_id_rango'));
+                 //$crud->callback_column($this->unique_field_name('id_seccion'),array($this,'_callback_cambiar_id_seccion'));
+                 // $crud->callback_column($this->unique_field_name('id_rango'),array($this,'_callback_cambiar_id_rango'));
                  $crud->callback_column('descripcion',array($this,'_callback_cambiar_valores'));
                }
 
@@ -968,10 +971,10 @@ class Catalogo extends MY_Controller {
                  $crud->add_fields("descripcion", "id_tipo_metodologia");
                  $crud->edit_fields("descripcion", "id_tipo_metodologia");
                  $crud->required_fields('descripcion');
-                 $crud->set_relation('id_tipo_metodologia','tipo_metodologia','id_tipo_metodologia');
+                 $crud->set_relation('id_tipo_metodologia','tipo_metodologia','lang',null,'id_tipo_metodologia asc');
 
                  if($crud->getState() == 'success' || $crud->getState() == 'list'){
-                    $crud->callback_column($this->unique_field_name('id_tipo_metodologia'),array($this,'_callback_cambiar_id_tipo_metodologia'));
+                    //$crud->callback_column($this->unique_field_name('id_tipo_metodologia'),array($this,'_callback_cambiar_id_tipo_metodologia'));
                     $crud->callback_column('descripcion',array($this,'_callback_cambiar_valores'));
                  }
 

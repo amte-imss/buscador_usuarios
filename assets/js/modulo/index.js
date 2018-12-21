@@ -1,4 +1,4 @@
-function get_info_modulo(modulo) {            
+function get_info_modulo(modulo) {
     data_ajax(site_url + '/modulo/index/2/' + modulo, null, '#my_modal_content',
             function () {
                 $.getJSON(site_url + "/modulo/get_modulo/" + modulo, function (data) {
@@ -31,14 +31,16 @@ function form_submit() {
 //                mostrar_loader();
             }
         }).done(function (response) {
-            console.log(response);
+            //console.log(response);
             refresh_page();
+        }).fail(function(fail){
+          console.log(fail)
         });
     });
 }
 ;
 
-function form_save() {    
+function form_save() {
     data_ajax(site_url + '/modulo/index/2', null, '#my_modal_content', form_submit);
 }
 
@@ -46,7 +48,7 @@ function refresh_page() {
     data_ajax(site_url + '/modulo/index/0', $(this), '#area_modulos', form_submit);
 }
 
-function get_niveles_atencion(modulo){    
+function get_niveles_atencion(modulo){
     data_ajax(site_url + '/modulo/index/3/'+modulo, null, '#my_modal_content', form_submit);
 }
 

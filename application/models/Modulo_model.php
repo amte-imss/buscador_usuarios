@@ -357,7 +357,7 @@ class Modulo_model extends CI_Model
             if ($result_set)
             {
                 $salida = $result_set->result_array();
-            }            
+            }
         }
         return $salida;
     }

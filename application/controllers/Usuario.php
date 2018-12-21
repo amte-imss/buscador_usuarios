@@ -48,24 +48,36 @@ class Usuario extends MY_Controller {
         }
     }
 
-    private function muestra_usuario($usuario = 0) {
-        $output['language_text'] = $this->language_text;
+    private function obtener_db_usuario($id_usuario)
+    {
         $params['where'] = array(
-            'usuarios.id_usuario' => $usuario
+            'usuarios.id_usuario' => $id_usuario
         );
         $params['select'] = array(
-            'usuarios.id_usuario', 'inf.matricula', 'inf.nombre',
-            'inf.apellido_paterno', 'inf.apellido_materno', 'sexo',
-            'inf.fecha_nacimiento', 'dep.nombre departamento', //'dep.id_departamento_instituto', 
-            'cat.id_categoria', 'cat.nombre categoria', //'C.cve_tipo_contratacion',
-            'inf.curp', 'inf.rfc', 'inf.telefono_personal',
-            'inf.telefono_oficina', 'inf.email', 'usuarios.activo usuario_activo',
-            'dep.clave_departamental', 'cat.clave_categoria'
+            'inf.es_imss',
+            'usuarios.id_usuario', 'usuarios.activo usuario_activo',
+            'inf.matricula', 'inf.rfc','inf.curp',
+            'inf.nombre', 'inf.apellido_paterno', 'inf.apellido_materno', 'sexo',
+            'inf.email', 'inf.telefono_personal','inf.telefono_oficina',
+            'inf.clave_pais','inf.pais_institucion','inf.institucion',
+            'dep.clave_departamental','dep.nombre departamento',
+            'uni.clave_unidad','uni.nombre unidad',
+            'cat.clave_categoria','cat.nombre categoria'
         );
         $resultado = $this->usuario->get_usuarios($params);
+        //pr($resultado);
         if (count($resultado) == 1) {
-            $output['usuario'] = $resultado[0];
+            return $resultado[0];
         }
+
+        return array();
+    }
+
+    private function muestra_usuario($usuario = 0) {
+        $this->load->model('Catalogo_model', 'catalogo');
+        $output['language_text'] = $this->language_text;
+        $output['usuario'] = $this->obtener_db_usuario($usuario);
+        $output['paises'] = dropdown_options($this->catalogo->get_paises(), "clave_pais", "lang", $this->obtener_idioma());
         $output['datos_basicos'] = $this->load->view('usuario/datos_basicos.tpl.php', $output, true);
         $output['grupos_usuario'] = $this->usuario->get_niveles_acceso($output['usuario']['id_usuario']);
         $output['campo_password'] = $this->load->view('usuario/campo_password.tpl.php', $output, true);
@@ -77,18 +89,24 @@ class Usuario extends MY_Controller {
     }
 
     private function lista_usuarios(&$params = []) {
-
+        //pr($params);
         $filtros = $this->genera_filtros($params);
         $filtros['limit'] = isset($params['pageSize']) ? $params['pageSize'] : Usuario::LIMIT;
         $filtros['offset'] = isset($params['pageIndex']) ? ($filtros['limit'] * ($params['pageIndex'] - 1)) : 0;
-
+        /*
         $filtros['select'] = array(
             'usuarios.id_usuario', 'coalesce(inf.matricula, usuarios.username) matricula',
             'concat(inf.nombre, $$ $$, inf.apellido_paterno, $$ $$, inf.apellido_materno) nombre',
             'del.nombre delegacion', 'uni.nombre unidad', 'inf.es_imss', 'usuarios.activo',
             '(select array_agg(nombre) from sistema.roles R join sistema.usuario_rol UR on R.clave_rol=UR.clave_rol and UR.id_usuario=usuarios.id_usuario and UR.activo=true) as rol'
         );
+        */
+        $filtros['select'] = array(
+            'usuarios.id_usuario','usuarios.username', 'concat(inf.nombre, $$ $$, inf.apellido_paterno, $$ $$, inf.apellido_materno) nombre_completo', 'del.nombre delegacion', 'inf.es_imss', 'usuarios.activo','(select array_agg(nombre) from sistema.roles R join sistema.usuario_rol UR on R.clave_rol=UR.clave_rol and UR.id_usuario=usuarios.id_usuario and UR.activo=true) as rol'
+        );
+
         $usuarios['data'] = $this->usuario->get_usuarios($filtros); //exit();
+        //pr($usuarios['data']);
         $filtros['total'] = true;
         $total = $this->usuario->get_usuarios($filtros)[0]['total'];
         $usuarios['length'] = $total;
@@ -102,17 +120,22 @@ class Usuario extends MY_Controller {
         foreach ($params as $key => $value) {
             if ($value != '') {
                 switch ($key) {
+                    /*
                     case 'matricula':
                         $filtros['like']['usuarios.username'] = $value;
                         break;
+                        */
+                    case 'username':
+                        $filtros['where']['usuarios.username'] = $value;
+                        break;
                     case 'delegacion':
-                        $filtros['like']['del.nombre'] = $value;
+                        $filtros['ilike']['del.nombre'] = $value;
                         break;
                     case 'unidad':
                         $filtros['like']['uni.nombre'] = $value;
                         break;
-                    case 'nombre':
-                        $filtros['like']['inf.nombre'] = $value;
+                    case 'nombre_completo':
+                        $filtros['like']['concat(inf.nombre, $$ $$, inf.apellido_paterno, $$ $$, inf.apellido_materno)'] = $value;
                         break;
                     case 'es_imss':
                         $filtros['where']['inf.es_imss'] = $value;
@@ -130,17 +153,28 @@ class Usuario extends MY_Controller {
     }
 
     public function editar($id_usuario = 0, $tipo = Usuario::BASICOS) {
-        $salida = [];
+        $salida['tp_msg'] = En_tpmsg::DANGER;
+        $output['status'] = false;
         $view = '';
-        if ($this->input->post() && $this->input->is_ajax_request()) {
+        $post = $this->input->post(null,true);
+        $es_imss = false;
+        if($post) {
             $this->config->load('form_validation'); //Cargar archivo con validaciones
             switch ($tipo) {
                 case Usuario::BASICOS:
-                    $view = $this->get_datos_basicos($id_usuario);
-                    $validations = $this->config->item('form_actualizar'); //Obtener validaciones de archivo general
+                    $params['where'] = array('usuarios.id_usuario' => $id_usuario);
+                    $params['select'] = array('es_imss');
+                    $resultado = $this->usuario->get_usuarios($params);
+
+                    $es_imss = $resultado[0]['es_imss'];
+                    if($es_imss){
+                        $validations = $this->config->item('form_actualizar_interno');
+                    }else{
+                        $validations = $this->config->item('form_actualizar_externo');
+                    }
+                    //$view = $this->get_datos_basicos($id_usuario);
                     break;
                 case Usuario::PASSWORD:
-                    $view = $this->load->view('usuario/campo_password.tpl.php', array(), true);
                     $validations = $this->config->item('form_user_update_password'); //Obtener validaciones de archivo general
                     break;
                 case Usuario::NIVELES_ACCESO:
@@ -151,21 +185,37 @@ class Usuario extends MY_Controller {
                     $validations = $this->config->item('form_status_actividad_usuario');
                     break;
             }
+            //pr($validations);
             $this->form_validation->set_rules($validations); //Añadir validaciones
             if ($this->form_validation->run() == TRUE) {
                 $params = $this->input->post(null, true);
+                if($es_imss){
+                    unset($params['categoria']);
+                    unset($params['unidad']);
+                    unset($params['departamento']);
+                    unset($params['matricula']);
+                    unset($params['curp']);
+                    unset($params['rfc']);
+                }
                 $params['id_usuario'] = $id_usuario;
-                $salida['tp_msg'] = $this->usuario->update($tipo, $params);
-                $output['status'] = $salida;
-                $salida['status'] = $salida['tp_msg'];
+                if($this->usuario->update($tipo, $params)){
+                    $salida['tp_msg'] = En_tpmsg::SUCCESS;
+                    $salida['status'] = true;
+                    $output['status'] = true;
+                    $salida['msg'] = 'Se actualizo correctamente';
+                }
             } else {
-                $salida['tp_msg'] = En_tpmsg::DANGER;
-                $salida['msg'] = validation_errors();
                 $output['status'] = false;
+                $salida['msg'] = validation_errors();
+                
             }
+            $output['language_text'] = $this->language_text;
             switch ($tipo) {
                 case Usuario::BASICOS:
-                    $view = $this->get_datos_basicos($id_usuario, $output);
+                    $this->load->model('Catalogo_model', 'catalogo');
+                    $output['paises'] = dropdown_options($this->catalogo->get_paises(), "clave_pais", "lang", $this->obtener_idioma());
+                    $output['usuario'] = $this->obtener_db_usuario($id_usuario);
+                    $view = $this->load->view('usuario/datos_basicos.tpl.php', $output, true);
                     break;
                 case Usuario::PASSWORD:
                     $view = $this->load->view('usuario/campo_password.tpl.php', $output, true);
@@ -184,12 +234,15 @@ class Usuario extends MY_Controller {
             'usuarios.id_usuario' => $id_usuario
         );
         $params['select'] = array(
-            'usuarios.id_usuario', 'inf.matricula', 'inf.nombre',
-            'inf.apellido_paterno', 'inf.apellido_materno', 'sexo',
-            'inf.fecha_nacimiento', 'dep.nombre departamento', //'dep.id_departamento_instituto', 
-            'cat.id_categoria', 'cat.nombre categoria', //'C.cve_tipo_contratacion',
-            'inf.curp', 'inf.rfc', 'inf.telefono_personal',
-            'inf.telefono_oficina', 'inf.email', 'dep.clave_departamental', 'cat.clave_categoria'
+            'inf.es_imss',
+            'usuarios.id_usuario', 'usuarios.activo usuario_activo',
+            'inf.matricula', 'inf.rfc','inf.curp',
+            'inf.nombre', 'inf.apellido_paterno', 'inf.apellido_materno', 'sexo',
+            'inf.email', 'inf.telefono_personal','inf.telefono_oficina',
+            'inf.clave_pais','inf.pais_institucion','inf.institucion',
+            'dep.clave_departamental','dep.nombre departamento',
+            'uni.clave_unidad','uni.nombre unidad',
+            'cat.clave_categoria','cat.nombre categoria'
         );
         $resultado = $this->usuario->get_usuarios($params);
         if (count($resultado) == 1) {

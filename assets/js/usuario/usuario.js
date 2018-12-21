@@ -5,7 +5,11 @@ $(function () {
         data_ajax($(this).attr('action'), $(this), '#campo_password', null, true);
     });
 
-    $('#form_actualizar').submit(function (event) {
+    $('#form_actualizar_interno').submit(function (event) {
+        event.preventDefault();
+        data_ajax($(this).attr('action'), $(this), '#area_datos_basicos', null, true);
+    });
+    $('#form_actualizar_externo').submit(function (event) {
         event.preventDefault();
         data_ajax($(this).attr('action'), $(this), '#area_datos_basicos', null, true);
     });

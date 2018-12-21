@@ -2,13 +2,32 @@
  $('[data-toggle="tooltip"]').tooltip(); //Llamada a tooltip
  });*/
 
+/**
+ *	Método que muestra una imagen (gif animado) que indica que algo esta cargando
+ *	@return	string	Contenedor e imagen del cargador.
+ */
+function create_loader() {
+    return '<img src="' + img_url_loader + '" alt="Cargando..." title="Cargando..." />';
+//    return '<div id="ajax_loader" align="center" style="padding-top:200px; padding-bottom:200px;">\n\
+//<img src="' + img_url_loader + '" alt="Cargando..." title="Cargando..." />\n\
+//</div>';
+}
+
+/**
+ *	Método que remueve el contenedor e imagen de cargando
+ */
+function remove_loader() {
+    $("#ajax_loader").remove();
+}
 function mostrar_loader() {
     $('#overlay').fadeIn('slow', function () {
+
     });
 }
 
 function ocultar_loader() {
     $('#overlay').fadeOut('slow', function () {
+
     });
 }
 
@@ -141,7 +160,7 @@ function data_ajax_print(path, form_recurso, elemento_resultado, name_funcion_re
             } else {
                 $(elemento_resultado).html(json.html);
             }
-        } catch (err) {//No es un json
+        } catch (err) {//No es un json 
             json = {html: "", msj: "Hola", tpmsj: "succes"}
             setTimeout(name_funcion_resultado + "(" + json + ")", 1);
             $(elemento_resultado).html(response);

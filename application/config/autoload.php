@@ -59,7 +59,8 @@ $autoload['packages'] = array();
   |
   |	$autoload['libraries'] = array('user_agent' => 'ua');
  */
-$autoload['libraries'] = array('en_tipo_exposicion','session',"En_estado_revision", 'En_tpmsg', 'En_sexo', 'En_datos_sesion', 'template');
+//$autoload['libraries'] = array('en_tipo_exposicion','session',"En_estado_revision", 'En_tpmsg', 'En_sexo', 'En_datos_sesion', 'template');
+$autoload['libraries'] = array('session', 'En_datos_sesion', 'template');
 
 /*
   | -------------------------------------------------------------------

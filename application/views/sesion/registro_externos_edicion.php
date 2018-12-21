@@ -1,193 +1,216 @@
-<?php
-if (isset($registro_valido)) {
-    $tipo = $registro_valido['result'] ? 'success' : 'danger';
-    echo html_message($registro_valido['msg'], $tipo);
-}
-?>
+<br><br>
 
-<div id="area_registro_<?php echo $tipo_registro; ?>" class="form area_registro">
-    <?php echo form_open('inicio/registro/' . $tipo_registro, array('id' => 'registro_form' . $tipo_registro, 'autocomplete' => 'off')); ?>
-    <div class="sign-in-htm">
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['ext_nombre']; ?></label>
-            <?php
-            echo $this->form_complete->create_element(array('id' => 'ext_nombre',
-                'type' => 'text',
-                'value' => isset($post['ext_nombre']) ? $post['ext_nombre'] : '',
-                'attributes' => array(
-                    'class' => 'form-control',
-            )));
-            echo form_error_format('ext_nombre');
-            ?>
+<h1 class="section-title">
+  <span data-animation="flipInY" data-animation-delay="100" class="icon-inner animated flipInY visible"><span class="fa-stack"><i class="fa rhex fa-stack-2x"></i><i class="fa fa-ticket fa-stack-1x"></i></span></span>
+  <span data-animation="fadeInRight" data-animation-delay="100" class="title-inner animated fadeInRight visible">Editar perfil</span>
+</h1>
+<section class="panel panel-default">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-offset-1 col-sm-10">
+        <?php
+        if(isset($salida))
+        {
+          echo '<div class="alert alert-'.$salida['msg_type'].'">';
+          echo $salida['msg'];
+        ?>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <?php
+        echo '</div>';
+        }
+      ?>
+      </div>
+    </div><!--row-->
+    <!-- Contact form -->
+      <?php echo form_open('perfil/editar', array('id' => 'form_editar_usuario_externos', 'autocomplete' => 'off')); ?>
+      <br>
+      <div class="col-sm-12 af-outer af-required">
+        <div class="col-sm-2">
         </div>
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['ext_ap']; ?></label>
-            <?php
-            echo $this->form_complete->create_element(array('id' => 'ext_ap',
-                'type' => 'text',
-                'value' => isset($post['ext_ap']) ? $post['ext_ap'] : '',
-                'attributes' => array(
-                    'class' => 'form-control',
-            )));
-            echo form_error_format('ext_ap');
-            ?>
+        <div class="col-sm-3">
+          <label for=""><?php echo $language_text['registro_usuario']['ext_nombre']; ?></label>
         </div>
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['ext_am']; ?></label>
-            <?php
-            echo $this->form_complete->create_element(array('id' => 'ext_am',
-                'type' => 'text',
-                'value' => isset($post['ext_am']) ? $post['ext_am'] : '',
-                'attributes' => array(
-                    'class' => 'form-control',
-            )));
-            echo form_error_format('ext_am');
-            ?>
+        <div class="">
+          <input type="text" id="ext_nombre" name="ext_nombre" value="<?php echo $datos_usuario['nombre'] ?>" class="form-control placeholder" size="30">
         </div>
-        <div class="form-group">
-            <div class="col-md-12">
-
-                <div class="col-md-3 form-etiqueta">
-                    <?php echo form_label($language_text['registro_usuario']['sexo'], 'sexo'); ?>
-
-                </div>
-                <div class="col-md-3">
-                    <?php echo form_radio(array('name' => 'ext_sexo', 'value' => 'M', 'checked' => (isset($post['ext_sexo']) && $post['ext_sexo'] == 'M') ? true : false, 'id' => 'ext_sexo')) . form_label($language_text['registro_usuario']['ext_sexo_m'], 'male'); ?>
-                </div>
-                <div class="col-md-3">
-                    <?php echo form_radio(array('name' => 'ext_sexo', 'value' => 'F', 'checked' => (isset($post['ext_sexo']) && $post['ext_sexo'] == 'F') ? true : false, 'id' => 'ext_sexo')) . form_label($language_text['registro_usuario']['ext_sexo_f'], 'female'); ?>
-                </div>
-                <div class="col-md-3">
-                    <?php echo form_radio(array('name' => 'ext_sexo', 'value' => 'O', 'checked' => (isset($post['ext_sexo']) && $post['ext_sexo'] == 'O') ? true : false, 'id' => 'ext_sexo')) . form_label($language_text['registro_usuario']['ext_sexo_o'], 'otro'); ?>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <?php echo form_error_format('ext_sexo'); ?>
-            </div>
+      </div>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-7">
+        <?php echo form_error_format('ext_nombre');?>
+      </div>
+      <br><br>
+      <div class="col-sm-12 af-outer af-required">
+        <div class="col-sm-2">
         </div>
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['ext_mail']; ?></label>
-            <?php
-            echo $this->form_complete->create_element(array('id' => 'ext_mail',
-                'type' => 'email',
-                'value' => isset($post['ext_mail']) ? $post['ext_mail'] : '',
-                'attributes' => array(
-                    'class' => 'form-control',
-            )));
-            echo form_error_format('ext_mail');
-            ?>
+        <div class="col-sm-3">
+          <label for=""><?php echo $language_text['registro_usuario']['ext_ap'];?></label>
         </div>
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['telefono_personal']; ?></label>
-            <?php
-            echo $this->form_complete->create_element(array('id' => 'telefono_personal',
-                'type' => 'numeric',
-                'value' => isset($post['telefono_personal']) ? $post['telefono_personal'] : '',
-                'attributes' => array(
-                    'class' => 'input form-control',
-            )));
-            echo form_error_format('telefono_personal');
-            ?>
+        <div class="">
+          <input type="text" id="ext_ap" name="ext_ap" value="<?php echo $datos_usuario['apellido_paterno'] ?>" class="form-control placeholder" size="30">
         </div>
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['telefono_oficina']; ?></label>
-            <?php
-            echo $this->form_complete->create_element(array('id' => 'telefono_oficina',
-                'type' => 'numeric',
-                'value' => isset($post['telefono_oficina']) ? $post['telefono_oficina'] : '',
-                'attributes' => array(
-                    'class' => 'input form-control',
-            )));
-            echo form_error_format('telefono_oficina');
-            ?>
+      </div>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-7">
+        <?php echo form_error_format('ext_ap');?>
+      </div>
+      <br><br>
+      <div class="col-sm-12 af-outer af-required">
+        <div class="col-sm-2">
         </div>
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['pais_origen']; ?></label>
-            <?php
+        <div class="col-sm-3">
+          <label for=""><?php echo $language_text['registro_usuario']['ext_am'];?></label>
+        </div>
+        <div class="">
+          <input type="text" id="ext_am" name="ext_am" value="<?php echo $datos_usuario['apellido_materno'] ?>" class="form-control placeholder" size="30">
+        </div>
+      </div>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-7">
+        <?php echo form_error_format('ext_am');?>
+      </div>
+      <br><br>
+      <div class="col-sm-12 af-outer af-required">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-2">
+          <label for=""><?php echo $language_text['registro_usuario']['sexo'];?></label>
+        </div>
+        <div class="col-sm-6">
+          <div class="col-md-3">
+              <?php echo form_radio(array('name' => 'sexo', 'value' => En_sexo::MASCULINO, 'checked' => (isset($datos_usuario['sexo']) && $datos_usuario['sexo'] == 'M') ? true : false, 'id' => 'sexo')) . form_label($language_text['registro_usuario']['ext_sexo_m'], 'male'); ?>
+          </div>
+          <div class="col-md-3">
+              <?php echo form_radio(array('name' => 'sexo', 'value' => En_sexo::FEMENINO, 'checked' => (isset($datos_usuario['sexo']) && $datos_usuario['sexo'] == 'F') ? true : false, 'id' => 'sexo')) . form_label($language_text['registro_usuario']['ext_sexo_f'], 'female'); ?>
+          </div>
+          <div class="col-md-3">
+              <?php echo form_radio(array('name' => 'sexo', 'value' => En_sexo::OTRO, 'checked' => (isset($datos_usuario['sexo']) && $datos_usuario['sexo'] == 'O') ? true : false, 'id' => 'sexo')) . form_label($language_text['registro_usuario']['ext_sexo_o'], 'otro'); ?>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-7">
+        <?php echo form_error_format('sexo');?>
+      </div>
+      <br><br>
+      <div class="col-sm-12 af-outer af-required">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-3">
+          <label for=""><?php echo $language_text['registro_usuario']['ext_mail'];?></label>
+        </div>
+        <div class="">
+          <input type="text" id="ext_mail" name="ext_mail" value="<?php echo $datos_usuario['email'] ?>" class="form-control placeholder" size="30">
+        </div>
+      </div>
+      <br><br>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-7">
+        <?php echo form_error_format('ext_mail');?>
+      </div>
+      <div class="col-sm-12 af-outer af-required">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-3">
+          <label for=""><?php echo $language_text['registro_usuario']['telefono_personal'];?></label>
+        </div>
+        <div class="">
+          <input type="text" id="telefono_personal" name="telefono_personal" value="<?php echo $datos_usuario['telefono_personal'] ?>" class="form-control placeholder" size="30">
+        </div>
+      </div>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-7">
+        <?php echo form_error_format('telefono_personal');?>
+      </div>
+      <br><br>
+      <div class="col-sm-12 af-outer af-required">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-3">
+          <label for=""><?php echo $language_text['registro_usuario']['telefono_oficina'];?></label>
+        </div>
+        <div class="">
+          <input type="text" id="telefono_oficina" name="telefono_oficina" value="<?php echo $datos_usuario['telefono_oficina'] ?>" class="form-control placeholder" size="30">
+        </div>
+      </div>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-7">
+        <?php echo form_error_format('telefono_oficina');?>
+      </div>
+      <br><br>
+      <div class="col-sm-12 af-outer af-required">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-3">
+          <label for=""><?php echo $language_text['registro_usuario']['pais_origen'];?></label>
+        </div>
+        <div class="">
+          <?php
             echo $this->form_complete->create_element(array('id' => 'pais_origen',
-                'type' => 'dropdown',
-                'first' => array('' => $language_text['registro_usuario']['pais_origen']),
-                'options' => $paises,
-                'value' => isset($post['pais_origen']) ? $post['pais_origen'] : 'MX',
-                'attributes' => array(
-                    'class' => 'form-control',
-                    'style' => 'max-width:210px'
+              'type' => 'dropdown',
+              'first' => array('' => $language_text['registro_usuario']['pais_origen']),
+              'options' => $paises,
+              'value' => isset($datos_usuario['clave_pais']) ? $datos_usuario['clave_pais'] : 'MX',
+              'attributes' => array(
+                  'class' => 'form-control',
+                  'style' => 'max-width:210px'
             )));
-            echo form_error_format('pais_origen');
-            ?>
+          ?>
         </div>
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['pais_institucion']; ?></label>
-            <?php
+      </div>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-7">
+        <?php echo form_error_format('pais_origen');?>
+      </div>
+      <br><br>
+      <div class="col-sm-12 af-outer af-required">
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-3">
+          <label for=""><?php echo $language_text['registro_usuario']['pais_institucion'];?></label>
+        </div>
+        <div class="">
+          <?php
             echo $this->form_complete->create_element(array('id' => 'pais_institucion',
-                'type' => 'dropdown',
-                'first' => array('' => $language_text['registro_usuario']['pais_institucion']),
-                'options' => $paises,
-                'value' => isset($post['pais_institucion']) ? $post['pais_institucion'] : 'MX',
-                'attributes' => array(
-                    'class' => 'form-control',
-                    'style' => 'max-width:210px'
+              'type' => 'dropdown',
+              'first' => array('' => $language_text['registro_usuario']['pais_institucion']),
+              'options' => $paises,
+              'value' => isset($datos_usuario['clave_pais']) ? $datos_usuario['pais_institucion'] : 'MX',
+              'attributes' => array(
+                  'class' => 'form-control',
+                  'style' => 'max-width:210px'
             )));
-            echo form_error_format('pais_institucion');
-            ?>
+          ?>
         </div>
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['institucion']; ?></label>
-            <?php
-            echo $this->form_complete->create_element(array('id' => 'institucion',
-                'type' => 'text',
-                'value' => isset($post['institucion']) ? $post['institucion'] : '',
-                'attributes' => array(
-                    'class' => 'input form-control',
-            )));
-            echo form_error_format('institucion');
-            ?>
+      </div>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-7">
+        <?php echo form_error_format('pais_institucion');?>
+      </div>
+      <br><br>
+      <div class="col-sm-12 af-outer af-required">
+        <div class="col-sm-2">
         </div>
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['reg_password']; ?></label>
-            <?php
-            echo $this->form_complete->create_element(array('id' => 'reg_password',
-                'type' => 'password',
-                'value' => isset($post['reg_password']) ? $post['reg_password'] : '',
-                'attributes' => array(
-                    'class' => 'input form-control',
-            )));
-            echo form_error_format('reg_password');
-            ?>
+        <div class="col-sm-3">
+          <label for=""><?php echo $language_text['registro_usuario']['institucion'];?></label>
         </div>
-        <div class="form-group">
-            <label class="pull-left form-etiquetas pull-right col-sm-5"><?php echo $language_text['registro_usuario']['reg_repassword']; ?></label>
-            <?php
-            echo $this->form_complete->create_element(array('id' => 'reg_repassword',
-                'type' => 'password',
-                'value' => isset($post['reg_repassword']) ? $post['reg_repassword'] : '',
-                'attributes' => array(
-                    'class' => 'input form-control',
-//                    'required' => true,
-            )));
-            echo form_error_format('reg_repassword');
-            ?>
+        <div class="">
+          <input type="text" id="institucion" name="institucion" value="<?php echo $datos_usuario['institucion'] ?>" class="form-control placeholder" size="30">
         </div>
-        <br>
-        <div class="col-sm-12">
-            <div class="col-sm-2">
-            </div>
-            <div class="col-sm-8">
-                <input type="button" id="regform_ext" data-animation="flipInY" data-animation-delay="100" class="btn btn-theme btn-block submit-button" value="<?php echo $language_text['registro_usuario']['registrar']; ?>" data-tpform="<?php echo $tipo_registro; ?>">
-            </div>
-        </div>
-
-    </div>
+      </div>
+      <div class="col-sm-3"></div>
+      <div class="col-sm-7">
+        <?php echo form_error_format('institucion');?>
+      </div>
+      <br><br>
+      <div class="col-sm-12">
+          <div class="col-sm-2">
+          </div>
+          <div class="col-sm-8">
+              <button id="regform" type="submit" class="btn btn-theme btn-block submit-button" onclick="mostrar_loader();"><?php echo $language_text['registro_usuario']['actualizar_registro']; ?></button>
+          </div>
+      </div>
+    <!-- /Contact form -->
     <?php echo form_close(); ?>
-    <br><br>
-</div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#regform_ext").on('click', function (e) {
-            var tipoform = $(this).data('tpform');
-            var div = "#r_" + tipoform;
-            data_ajax(site_url + '/inicio/registro/' + tipoform, '#registro_form' + tipoform, div);
-        });
-    });
-</script>
+  </div>
+</section>

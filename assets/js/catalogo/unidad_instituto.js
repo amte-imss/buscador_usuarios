@@ -51,11 +51,11 @@ $(function(){
         },
         fields: [
                     {name: 'id_unidad_instituto', title: "#", visible: false},
-                    {name: 'delegacion', title: 'Delegación', type: 'text'},
+                    //{name: 'delegacion', title: 'Delegación', type: 'text'},
                     {name: 'clave_unidad', title: 'Clave unidad', type: 'text'},
-                    {name: 'unidad', title: 'Unidad', type: 'text'},
+                    {name: 'nombre', title: 'Unidad', type: 'text'},
                     {name: 'clave_presupuestal', title: 'Clave presupuestal', type: 'text'},
-                    {name: 'es_umae', title: 'UMAE', type: 'text'},
+                    //{name: 'es_umae', title: 'UMAE', type: 'text'},
                     {name: 'anio', title: 'Año', type: 'integer'},
                     {type: "control", editButton: false, deleteButton: false, width: "10%",
                     headerTemplate: function() {

@@ -398,30 +398,30 @@ if (!function_exists('get_etiqueta_row')) {
 
     /**
      * @author LEAS
-     * @return designa etiqueta de linea nueva para las vistas html,
+     * @return designa etiqueta de linea nueva para las vistas html, 
      */
     function get_etiqueta_row($indice = 1, $nueva_linea = false) {
 //        pr($indice);
 //        pr($indice % 2);
         $array_result = array();
         if ($indice % 2 == 0) {//Es continuación de la fila (par)
-            if ($nueva_linea and $indice > 1) {//si es nueva linea y el indice es mayor que 1
-                $array_result['row_begin'] = "</div><br><div class='row'>"; //Etiqueta de inicio de fila
-                $array_result['row_end'] = ""; //Etiqueta de fin de etiqueta
+            if ($nueva_linea and $indice > 1) {//si es nueva linea y el indice es mayor que 1 
+                $array_result['row_begin'] = "</div><br><div class='row'>"; //Etiqueta de inicio de fila 
+                $array_result['row_end'] = ""; //Etiqueta de fin de etiqueta 
                 $array_result['row_close'] = "</div>";
 //                pr($indice);
                 $indice ++;
                 $array_result['indice'] = $indice;
             } else {
 //                pr($indice);
-                $array_result['row_begin'] = ""; //Etiqueta de inicio de fila
-                $array_result['row_end'] = "</div>"; //Etiqueta de fin de etiqueta
+                $array_result['row_begin'] = ""; //Etiqueta de inicio de fila 
+                $array_result['row_end'] = "</div>"; //Etiqueta de fin de etiqueta 
                 $array_result['row_close'] = "";
                 $array_result['indice'] = $indice;
             }
         } else {//Nueva fila impar
-            $array_result['row_begin'] = "<br><div class='row'>"; //Etiqueta de inicio de fila
-            $array_result['row_end'] = ""; //Etiqueta de fin de etiqueta
+            $array_result['row_begin'] = "<br><div class='row'>"; //Etiqueta de inicio de fila 
+            $array_result['row_end'] = ""; //Etiqueta de fin de etiqueta 
             $array_result['row_close'] = "</div>";
             $array_result['indice'] = $indice;
         }
@@ -435,7 +435,7 @@ if (!function_exists('get_obtiene_cadena_pajar')) {
     /**
      * @fecha 25/04/2017
      * @author LEAS
-     * @return designa etiqueta de linea nueva para las vistas html,
+     * @return designa etiqueta de linea nueva para las vistas html, 
      */
     function get_obtiene_cadena_pajar($haystack = null, $needle = '$') {
         $pos_ini = strpos($haystack, $needle);
@@ -454,7 +454,7 @@ if (!function_exists('crea_directorio')) {
 
     /**
      * @author LEAS
-     * @return Si se crea el satisfactoriamente o existe el directorio retorna true, si no, false,
+     * @return Si se crea el satisfactoriamente o existe el directorio retorna true, si no, false, 
      */
     function crea_directorio($ruta) {
 //        pr($ruta);
@@ -471,7 +471,7 @@ if (!function_exists('get_elementos_lenguaje')) {
     /**
      * @fecha 26/04/2017
      * @author LEAS
-     * @return designa etiqueta de linea nueva para las vistas html,
+     * @return designa etiqueta de linea nueva para las vistas html, 
      */
     function get_elementos_lenguaje($identificadores = array()) {
         $CI = & get_instance();
@@ -494,7 +494,7 @@ if (!function_exists('classe_adicional_tipo_dato')) {
     /**
      * @fecha 04/05/2017
      * @author LEAS
-     * @return designa etiqueta de linea nueva para las vistas html,
+     * @return designa etiqueta de linea nueva para las vistas html, 
      */
     function classe_adicional_tipo_dato($tipo_dato_campo = '', $classe = '') {
         $concat = '';
@@ -517,7 +517,7 @@ if (!function_exists('get_extencion_archivo_de_nombre')) {
     /**
      * @fecha 07/06/2017
      * @author LEAS
-     * @return obtiene la extencion de archivo ,
+     * @return obtiene la extencion de archivo , 
      */
     function get_extencion_archivo_de_nombre($name_file = '') {
         $partes = explode('.', $name_file); //Rompe en partes
@@ -537,7 +537,7 @@ if (!function_exists('valida_fecha_inicial_menor_final')) {
      * @author LEAS
      * @param type $fecha_inicial
      * @param type $fecha_final
-     * @return False si es mayor la fecha inicial, true si la fecha final el
+     * @return False si es mayor la fecha inicial, true si la fecha final el 
      * mayor o igual que la fecha inicial
      */
     function valida_fecha_inicial_menor_final($fecha_inicial, $fecha_final) {
@@ -554,7 +554,7 @@ if (!function_exists('valida_fecha_mayor_actual')) {
      * @author LEAS
      * @param type $fecha_inicial
      * @param type $fecha
-     * @return False si es mayor la fecha inicial, true si la fecha final el
+     * @return False si es mayor la fecha inicial, true si la fecha final el 
      * mayor o igual que la fecha inicial
      */
     function valida_fecha_mayor_actual($fecha) {
@@ -588,7 +588,7 @@ if (!function_exists('transform_date')) {
     /**
      * @fecha 20/06/2017
      * @author Chris
-     * @param type $parametros
+     * @param type $parametros     
      * @return Arreglo de fechas si parametros es una cadena de arrays
      * String de las fechas si parametros es un array
      */
@@ -627,7 +627,7 @@ if (!function_exists('get_date_formato')) {
     /**
      * @fecha 20/06/2017
      * @author Chris
-     * @param type $parametros
+     * @param type $parametros     
      * @return Arreglo de fechas si parametros es una cadena de arrays
      * String de las fechas si parametros es un array
      */
@@ -639,6 +639,7 @@ if (!function_exists('get_date_formato')) {
 
 
 if (!function_exists('remove_accents')) {
+
     /**
      * @author CPMS
      * @date 25/07/2017
@@ -648,57 +649,7 @@ if (!function_exists('remove_accents')) {
     function remove_accents($str) {
         return strtolower(trim(preg_replace('~[^0-9a-z]+~i', ' ', preg_replace('~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', htmlentities($str, ENT_QUOTES, 'UTF-8'))), ' '));
     }
-}
 
-if(!function_exists('obtener_mes')){
-    /**
-     * @author Cheko
-     * @date 18/06/2018
-     * @param int $num_mes, numero de mes para regresar en cadena el mes
-     * @return string $mes, mes en string
-     *
-     */
-     function obtener_mes($num_mes){
-       switch ($num_mes) {
-         case 1:
-           return "Enero";
-           break;
-         case 2:
-           return "Febrero";
-           break;
-         case 3:
-           return "Marzo";
-           break;
-         case 4:
-           return "Abril";
-           break;
-         case 5:
-           return "Mayo";
-           break;
-         case 6:
-           return "Junio";
-           break;
-         case 7:
-           return "Julio";
-           break;
-         case 8:
-           return "Agosto";
-           break;
-         case 9:
-           return "Septiembre";
-           break;
-         case 10:
-           return "Octubre";
-           break;
-         case 11:
-           return "Noviembre";
-           break;
-         case 12:
-           return "Diciembre";
-           break;
-       }
-     }
 }
-
 
 /* End of file general_helper.php */

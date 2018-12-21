@@ -65,21 +65,23 @@ var theme = function () {
     // ---------------------------------------------------------------------------------------
     function handleSmoothScroll(){
         $('.sf-menu a, .scroll-to').click(function () {
+            if ($(this).hasClass('control')) {
 
-            if ($(this).hasClass('control')) {}
+            }
             else {
-
-                //var headerH = $('header').outerHeight();
-                var headerH = 0;
-                $('.sf-menu a').removeClass('active');
-                $(this).addClass('active');
-                $('html, body').animate({
-                    scrollTop: $($(this).attr('href')).offset().top - headerH + 'px'
-                }, {
-                    duration: 1200,
-                    easing: 'easeInOutExpo'
-                });
-                return false;
+                if($($(this).attr('href')).offset() != undefined){
+                  //var headerH = $('header').outerHeight();
+                  var headerH = 0;
+                  $('.sf-menu a').removeClass('active');
+                  $(this).addClass('active');
+                  $('html, body').animate({
+                      scrollTop: $($(this).attr('href')).offset().top - headerH + 'px'
+                  }, {
+                      duration: 1200,
+                      easing: 'easeInOutExpo'
+                  });
+                  return false;
+                }
 
             }
         });

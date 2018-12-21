@@ -11,7 +11,10 @@ if (!function_exists('render_menu_no_sesion')) {
         $html = '';
         ob_start();
         ?>
-            <ul class="nav justify-content-center" id="menu">
+        <div id="mobile-menu"></div>
+        <nav class="navigation closed clearfix">
+            <a href="#" class="menu-toggle btn"><i class="fa fa-bars" style="color: red !important;"></i></a>
+            <ul class="sf-menu nav">
                 <?php
                 foreach ($menu as $item) {
                     //                pr($item);
@@ -27,7 +30,7 @@ if (!function_exists('render_menu_no_sesion')) {
                     }
                     ?>
                     <li class="<?php echo (current_url() == $enlace) ? 'active' : ''; ?>">
-                        <a href="<?php echo (isset($item['childs']) || $item['id_menu'] == 'CENSO' ? '#' : $enlace); ?>" <?php echo (isset($item['childs']) || $item['id_menu'] == 'CENSO' ? 'data-toggle="collapse" data-target="#menu' . $item['id_menu'] . '"' : ' id="tablero-menu-item-' . $item['id_menu'] . ' menuItem" class="tablero-menu-item" '); ?>
+                        <a href="<?php echo (isset($item['childs']) || $item['id_menu'] == 'CENSO' ? '#' : $enlace); ?>" <?php echo (isset($item['childs']) || $item['id_menu'] == 'CENSO' ? 'data-toggle="collapse" data-target="#menu' . $item['id_menu'] . '"' : ' id="tablero-menu-item-' . $item['id_menu'] . '" class="tablero-menu-item" '); ?>
                         <?php
                         if (isset($item['configurador'])) {
                             switch ($item['configurador']) {
@@ -66,6 +69,7 @@ if (!function_exists('render_menu_no_sesion')) {
                     </li>
                 <?php } ?>
             </ul>
+        </nav>
         <?php
         $html = ob_get_contents();
         ob_get_clean();

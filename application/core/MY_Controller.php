@@ -22,8 +22,8 @@ class MY_Controller extends CI_Controller {
         $this->load->config('general');
         $this->load->model('Idioma_model', 'idioma');
 
-        if(!is_null($this->session->flashdata('limpiar_post_update_lenguaje')) && $this->session->flashdata('limpiar_post_update_lenguaje')){
-            $_POST = array();//Limpiar post
+        if (!is_null($this->session->flashdata('limpiar_post_update_lenguaje')) && $this->session->flashdata('limpiar_post_update_lenguaje')) {
+            $_POST = array(); //Limpiar post
         }
         $usuario = $this->get_datos_sesion(En_datos_sesion::ID_USUARIO);
 //        $usuario_ = $this->get_datos_sesion();
@@ -55,12 +55,12 @@ class MY_Controller extends CI_Controller {
         $this->grupo_language_text = array_merge($this->grupo_language_text_generales, $this->grupo_language_text); //Agrega el grupo generales
         $this->language_text = $this->obtener_grupos_texto($this->grupo_language_text, $lenguaje);
         $this->template->setLanguageText($this->language_text);
+        $this->template->setLang($lenguaje);
 //        pr($this->language_text);
     }
 
     private function carga_imagen() {
         //carga datos de imagen del docente
-
     }
 
     protected function genera_menu() {
@@ -224,7 +224,7 @@ class MY_Controller extends CI_Controller {
                     } else {
                         header('Content-type: application/pdf');
                     }
-                    header('Content-Disposition: inline; filename="' . $result_file[0]['nombre_fisico'] .'"');
+                    header('Content-Disposition: inline; filename="' . $result_file[0]['nombre_fisico'] . '"');
                     header('Content-Transfer-Encoding: binary');
                     header('Expires: 0');
                     header('Cache-Control: must-revalidate');
@@ -250,41 +250,41 @@ class MY_Controller extends CI_Controller {
      *
      * @param type $file
      */
-    /*public function ver_archivo($file = null) {
-//        $string_values = get_elementos_lenguaje(array(En_catalogo_textos::COMPROBANTE));
-        if (is_null($file)) {
-            $data_error['heading'] = $this->language_text['generales']['error_404_generales'];
-            $data_error['message'] = $this->language_text['generales']['archivo_inexistente_generales'];
-            echo $this->load->view('errors/html/error_404.php', $data_error, TRUE);
-            exit();
-        }
+    /* public function ver_archivo($file = null) {
+      //        $string_values = get_elementos_lenguaje(array(En_catalogo_textos::COMPROBANTE));
+      if (is_null($file)) {
+      $data_error['heading'] = $this->language_text['generales']['error_404_generales'];
+      $data_error['message'] = $this->language_text['generales']['archivo_inexistente_generales'];
+      echo $this->load->view('errors/html/error_404.php', $data_error, TRUE);
+      exit();
+      }
 
-        $file_id = decrypt_base64($file); ///Decodificar url, evitar hack
-        $this->load->model("Files_model", "fm");
-        $result_file = $this->fm->get_file($file_id); //Se valida que exista registro en base de datos
-        if (!empty($result_file)) {
+      $file_id = decrypt_base64($file); ///Decodificar url, evitar hack
+      $this->load->model("Files_model", "fm");
+      $result_file = $this->fm->get_file($file_id); //Se valida que exista registro en base de datos
+      if (!empty($result_file)) {
 
-            $ruta_archivo =$result_file[0]['ruta'] . $result_file[0]['nombre_fisico'];
-            if (file_exists($ruta_archivo)) {
-//                pr('entra');
-                //$main_content = $this->load->view('template/pdfjs/viewer', array('ruta_archivo'=>$ruta_archivo), true);
-                $url = base_url($ruta_archivo);
-                $this->load->view('tc_template/pdfjs/viewer.php', array('ruta_archivo' => $url), false);
-//                pr($main_content);
-            } else {
-                $data_error['heading'] = 'error_404';
-                $data_error['message'] = 'archivo_inexistente';
-                echo $this->load->view('errors/html/error_404.php', $data_error, TRUE);
-                exit();
-            }
-        } else {
-            $html = '<div role="alert" class="alert alert-success" style="padding:25px; margin-bottom:80px;"><button aria-label="Close" data-dismiss="alert" class="close" type="button"><span aria-hidden="true">×</span></button><h4>' . $this->language_text['generales']['archivo_inexistente_generales'] . '</h4></div>';
-        }
-        if (isset($html)) {
-            $this->template->setMainContent($html);
-            $this->template->getTemplate();
-        }
-    }*/
+      $ruta_archivo =$result_file[0]['ruta'] . $result_file[0]['nombre_fisico'];
+      if (file_exists($ruta_archivo)) {
+      //                pr('entra');
+      //$main_content = $this->load->view('template/pdfjs/viewer', array('ruta_archivo'=>$ruta_archivo), true);
+      $url = base_url($ruta_archivo);
+      $this->load->view('tc_template/pdfjs/viewer.php', array('ruta_archivo' => $url), false);
+      //                pr($main_content);
+      } else {
+      $data_error['heading'] = 'error_404';
+      $data_error['message'] = 'archivo_inexistente';
+      echo $this->load->view('errors/html/error_404.php', $data_error, TRUE);
+      exit();
+      }
+      } else {
+      $html = '<div role="alert" class="alert alert-success" style="padding:25px; margin-bottom:80px;"><button aria-label="Close" data-dismiss="alert" class="close" type="button"><span aria-hidden="true">×</span></button><h4>' . $this->language_text['generales']['archivo_inexistente_generales'] . '</h4></div>';
+      }
+      if (isset($html)) {
+      $this->template->setMainContent($html);
+      $this->template->getTemplate();
+      }
+      } */
 
     /**
      *
@@ -424,7 +424,7 @@ class MY_Controller extends CI_Controller {
 //        pr($array_textos);
         foreach ($array_validacion as &$value) {
             if (isset($array_textos[$value[$field]])) {
-                $campo = str_replace(":", "", $array_textos[$value[$field]]);//Elimina caracteres de dos puntos
+                $campo = str_replace(":", "", $array_textos[$value[$field]]); //Elimina caracteres de dos puntos
                 $value[$label] = $campo; //Modifica el texto de las validaciones
             }
         }
@@ -435,5 +435,7 @@ class MY_Controller extends CI_Controller {
 //        $catalogo_idiomas = ['es' => 'Español', 'en' => 'Inglish'];
 //        return $catalogo_idiomas;
 //    }
-
 }
+
+//include_once APPPATH . 'core/General_revision.php';
+//include_once APPPATH . 'core/General_reportes.php';

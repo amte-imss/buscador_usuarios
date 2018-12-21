@@ -18,7 +18,8 @@ class Inicio extends MY_Controller {
     const INTERNOS = 'internos', EXTERNOS = 'externos', REGISTRO_USUARIO = "registro_usuario";
 
     public function __construct() {
-        $this->grupo_language_text = ['registro_usuario', 'inicio_sesion', 'mensajes', "listado_trabajo", "dashboard", "jsgrid_elementos"]; //Grupo de idiomas para el controlador actual
+        //$this->grupo_language_text = ['registro_usuario', 'inicio_sesion', 'mensajes', "listado_trabajo", "dashboard", "jsgrid_elementos"]; //Grupo de idiomas para el controlador actual
+        $this->grupo_language_text = ['registro_usuario', 'inicio_sesion', 'mensajes']; //Grupo de idiomas para el controlador actual
         parent::__construct();
         $this->load->library('form_complete');
         $this->load->library('form_validation');
@@ -31,7 +32,7 @@ class Inicio extends MY_Controller {
     }
 
     public function index() {
-        $this->language_text += $this->obtener_grupos_texto(array('template_general'), $this->obtener_idioma()); //textos del formulario
+        //$this->language_text += $this->obtener_grupos_texto(array('template_general'), $this->obtener_idioma()); //textos del formulario
         $data['language_text'] = $this->language_text; //Asigna textos de lenguaje para el template de login
         $inicio_reg = $this->session->flashdata('inicio_registro');
         if (!is_null($inicio_reg)) {
@@ -49,7 +50,7 @@ class Inicio extends MY_Controller {
             $this->config->load('form_validation'); //Cargar archivo con validaciones
             $validations = $this->config->item('login'); //Obtener validaciones de archivo general
             $this->form_validation->set_data($post);
-            $this->set_textos_campos_validacion($validations, $data['language_text']['inicio_sesion']);
+            //$this->set_textos_campos_validacion($validations, $data['language_text']['inicio_sesion']);
             $this->form_validation->set_rules($validations);
             if ($this->form_validation->run() == TRUE) {
                 $valido = $this->sesion->validar_usuario($post["usuario"], $post["password"]);
@@ -57,19 +58,28 @@ class Inicio extends MY_Controller {
                 switch ($valido) {
                     case 1:
                         //redirect to home //load menu...etc etc
-                        $params = array(
+                        /*$params = array(
                             'where' => array('usuarios.username' => $post['usuario'], 'usuarios.email' => $post["usuario"]),
                             'where_funcion' => array('usuarios.username' => "where", 'usuarios.email' => "or_where"),
                             'select' => array("case when usuarios.username is null then usuarios.email else usuarios.username end username",
                                 "usuarios.email", "inf.es_imss",
                                 "usuarios.id_usuario", "coalesce(inf.matricula, usuarios.username) matricula",
                                 "usuarios.clave_idioma lenguaje",
-                                "inf.id_informacion_usuario", "inf.nombre", "inf.apellido_paterno", "inf.apellido_materno",
+                                "inf.id_informacion_usuario", "inf.nombre", "inf.apellido_paterno", "inf.apellido_materno","inf.institucion",
+                                "inf.clave_pais", "inf.sexo","inf.pais_institucion","inf.telefono_personal", "inf.telefono_oficina",
                                 "uni.clave_unidad", "uni.nombre unidad", "inf.fecha_nacimiento",
                                 "dep.clave_departamental", "dep.nombre departamento",
                                 "cat.clave_categoria", "cat.id_categoria", "cat.nombre categoria",
                                 "inf.curp", "inf.rfc"
                                 , "inf.email", "inf.clave_delegacional", "del.nombre delegacion"
+                            )
+                        );*/
+                        $params = array(
+                            'where' => array('usuarios.username' => $post['usuario'], 'usuarios.email' => $post["usuario"]),
+                            'where_funcion' => array('usuarios.username' => "where", 'usuarios.email' => "or_where"),
+                            'select' => array("case when usuarios.username is null then usuarios.email else usuarios.username end username",
+                                "usuarios.email", "usuarios.id_usuario", "usuarios.username matricula",
+                                "usuarios.clave_idioma lenguaje"
                             )
                         );
                         $foro_educacion['usuario'] = $this->usuario->get_usuarios($params)[0];
@@ -100,7 +110,8 @@ class Inicio extends MY_Controller {
             $this->redireccion_inicio($foro_educacion);
         } else {//De inicio aquí es donde entra
             $this->load->model('Catalogo_model', 'catalogo');
-            $this->template->setTitle('Buscador de nómina');
+
+            $this->template->setTitle('Buscador de usuarios');
             //$this->template->setNav($this->load->view('tc_template/menu.tpl.php', null, TRUE));
             $main_content = $this->load->view('sesion/login_modal.tpl.php', $data, true);
             $this->template->setMainContent($main_content);
@@ -108,34 +119,33 @@ class Inicio extends MY_Controller {
         }
     }
 
-    public function ver_creditos() {
+    /*public function ver_creditos() {
         $output = [];
         $output['language_text'] = $this->language_text; //Asigna textos de lenguaje para el template de login
         $main_content = $this->load->view('creditos.php', $output, TRUE);
         $this->template->setMainContent($main_content);
         $this->template->getTemplate();
-    }
+    }*/
 
     private function redireccion_inicio(&$foro_educacion) {
         $redirect = array(LNiveles_acceso::Investigador => '/registro_investigacion/index',
             LNiveles_acceso::Revisor => '/revision/trabajos_investigacion_evaluacion',
             'default' => 'inicio/inicio',
         );
-        redirect(site_url('buscador/index')); //Redirección de moderador
         ///Redirección de investigador
-        // if (isset($foro_educacion['usuario']['niveles_acceso'][0]['clave_rol'])) {
-        //     $rol = $foro_educacion['usuario']['niveles_acceso'][0]['clave_rol'];
-        //     if (isset($redirect[$rol])) {
-        //         redirect(site_url($redirect[$rol])); //Redirección de moderador
-        //     } else {
-        //         redirect(site_url($redirect['default'])); //Redirección de moderador
-        //     }
-        // } else {
-        //     redirect(site_url($redirect['default'])); //Redirección de moderador
-        // }
+        if (isset($foro_educacion['usuario']['niveles_acceso'][0]['clave_rol'])) {
+            $rol = $foro_educacion['usuario']['niveles_acceso'][0]['clave_rol'];
+            if (isset($redirect[$rol])) {
+                redirect(site_url($redirect[$rol])); //Redirección de moderador
+            } else {
+                redirect(site_url($redirect['default'])); //Redirección de moderador
+            }
+        } else {
+            redirect(site_url($redirect['default'])); //Redirección de moderador
+        }
     }
 
-    public function registro_usuario() {
+    /*public function registro_usuario() {
         $foro_educacion = $this->session->userdata(En_datos_sesion::__INSTANCIA);
         if (isset($foro_educacion['usuario']['id_usuario'])) {
             redirect(site_url('inicio/inicio'));
@@ -155,7 +165,7 @@ class Inicio extends MY_Controller {
             $this->template->setMainContent($main_content);
             $this->template->getTemplate(true, 'tc_template/index_login.tpl.php');
         }
-    }
+    }*/
 
     /**
      * @author LEAS
@@ -164,7 +174,7 @@ class Inicio extends MY_Controller {
     public function inicio() {
         $output = [];
         $datos_sesion = $this->get_datos_sesion();
-        $id_informacion_usuario = $datos_sesion['id_informacion_usuario'];
+        //$id_informacion_usuario = $datos_sesion['id_informacion_usuario'];
 
         $lang = $this->obtener_idioma();
         $output['language_text'] = $this->language_text; //obtiene textos del lenguaje
@@ -180,7 +190,7 @@ class Inicio extends MY_Controller {
      * @author LEAS
      * @fecha 08/05/2018
      */
-    function informacion($tipo = 'lista') {
+    /*function informacion($tipo = 'lista') {
         $this->load->model('Trabajo_model', 'trabajo');
         $lang = $this->obtener_idioma();
         $listado = $this->trabajo->listado_trabajos_autor_general();
@@ -193,7 +203,26 @@ class Inicio extends MY_Controller {
         $output['data'] = $listado;
         header('Content-Type: application/json; charset=utf-8;');
         echo json_encode($output);
-    }
+    }*/
+
+//    public function inicio() {
+//        $foro_educacion = $this->session->userdata(En_datos_sesion::__INSTANCIA);
+//        //pr($foro_educacion);exit();
+//        if (isset($foro_educacion['usuario']['niveles_acceso']['0']['clave_rol']) && $foro_educacion['usuario']['niveles_acceso']['0']['clave_rol'] == 'INV') {
+//            redirect(site_url('/registro_investigacion/index'));
+//        } else {
+//            $output = [];
+//            $u_siap = $this->session->flashdata('die_sipimss_siap');
+//            if (!is_null($u_siap) && $u_siap == 0) {
+//                $output['usuario'] = $this->get_datos_sesion();
+//                $output['modal_siap'] = $this->load->view('sesion/modal_siap.tpl.php', $output, true);
+//            }
+//            $this->template->setTitle('Inicio');
+//            $main_content = $this->load->view('sesion/index.tpl.php', $output, true);
+//            $this->template->setMainContent($main_content);
+//            $this->template->getTemplate();
+//        }
+//    }
 
     function captcha() {
         new_captcha();
@@ -206,7 +235,7 @@ class Inicio extends MY_Controller {
         redirect(site_url());
     }
 
-    public function recuperar_password($code = null) {
+    /*public function recuperar_password($code = null) {
         $this->language_text += $this->obtener_grupos_texto(array('recuperar_contrasenia'), $this->obtener_idioma()); //textos del formulario
         $datos = array();
         $datos['language_text'] = $this->language_text;
@@ -239,16 +268,16 @@ class Inicio extends MY_Controller {
         //$main_content = $this->load->view('sesion/login_modal.tpl.php', $data, true);
         $this->template->setMainContent($main_content);
         $this->template->getTemplate(true, 'tc_template/index_login.tpl.php');
-    }
+    }*/
 
-    public function manteminiemto() {
+    /*public function manteminiemto() {
         echo 'En mantenimiento';
-    }
+    }*/
 
     /**
      * @deprecated since version 0.01
      */
-    public function dashboard() {
+    /*public function dashboard() {
         $id_usuario = $this->get_datos_sesion(En_datos_sesion::ID_USUARIO);
         $this->load->model('Modulo_model', 'modulo');
         $this->load->library('LNiveles_acceso');
@@ -258,9 +287,9 @@ class Inicio extends MY_Controller {
         } else {
             redirect('reporte/n1');
         }
-    }
+    }*/
 
-    public function registro($tipo_registro = null) {
+    /*public function registro($tipo_registro = null) {
         if (!is_null($tipo_registro)) {
 //            if ($this->input->post()) {
             $config = ['ruta_registro', 'select_validation'];
@@ -323,14 +352,14 @@ class Inicio extends MY_Controller {
             }
 //            }
             $this->load->model('Catalogo_model', 'catalogo');
-            $output['delegaciones'] = dropdown_options($this->catalogo->get_delegaciones(null, null /* array('oficinas_centrales' => false) */), 'clave_delegacional', 'nombre');
+            $output['delegaciones'] = dropdown_options($this->catalogo->get_delegaciones(null, null), 'clave_delegacional', 'nombre');
             $output['paises'] = dropdown_options($this->catalogo->get_paises(), "clave_pais", "lang", $this->obtener_idioma());
             $output['language_text'] = $this->language_text;
             $output['tipo_registro'] = $tipo_registro;
             $output['post'] = $this->input->post(null, TRUE);
             $this->load->view($config['ruta_registro'], $output);
         }
-    }
+    }*/
 
     public function mesa_ayuda() {
         $this->language_text += $this->obtener_grupos_texto(array('template_general'), $this->obtener_idioma()); //textos del formulario
@@ -341,7 +370,7 @@ class Inicio extends MY_Controller {
         $this->template->get_modal();
     }
 
-    private function valida_info_siap($usuario) {
+    /*private function valida_info_siap($usuario) {
         $status = true;
         if (isset($usuario['id_docente'])) {
             $status = false;
@@ -359,7 +388,7 @@ class Inicio extends MY_Controller {
                 $this->session->set_flashdata('die_sipimss_siap', 0);
             }
         }
-    }
+    }*/
 
     public function p404() {
         $output = [];

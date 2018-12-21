@@ -24,7 +24,7 @@ $(function(){
         controller: {
           loadData: function (filter) {
               mostrar_loader();
-              //console.log(filter);
+              console.log("Filter: ", filter);
               var d = $.Deferred();
               //var result = null;
 
@@ -40,6 +40,8 @@ $(function(){
                               data: result.data,
                               itemsCount: result.length,
                           });
+                      }).fail(function(error){
+                        console.log("ERROR: ", error);
                       });
                       ocultar_loader();
               return d.promise();
@@ -106,10 +108,9 @@ $(function(){
           }
         },
         fields: [
-                    {name: 'id_departamento_instituto', title: "#", visible: false},
-                    {name: 'clave_unidad', title: 'Clave unidad', type: 'text'},
-                    {name: 'departamento', title: 'Adscripción', type: 'text'},
-                    {name: 'clave_departamental', title: 'Clave adscripción', type: 'text'},                    
+                    {name: 'clave_departamental', title: 'Clave departamental', type: 'text'},
+                    {name: 'nombre', title: 'Departamento', type: 'text'},
+                    {name: 'clave_presupuestal', title: 'Clave presupuestal', type: 'text'},
                     {type: "control",  width: "10%"}
                 ]
             }
